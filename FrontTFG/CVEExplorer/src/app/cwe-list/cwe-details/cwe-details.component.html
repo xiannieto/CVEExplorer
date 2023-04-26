@@ -1,0 +1,26 @@
+<app-home></app-home>
+<div class="cwe-details" *ngIf="cwe">
+  <h2>{{ cwe.cweID }} - {{ cwe.name }}</h2>
+  <p>{{ cwe.description }}</p>
+  <p>{{ cwe.extendedDescription }}</p>
+
+  <h3>Ancestros</h3>
+  <ul *ngIf="ancestors.length > 0; else noAncestors">
+    <li *ngFor="let ancestor of ancestors">
+      {{ ancestor }}
+    </li>
+  </ul>
+  <ng-template #noAncestors>
+    <p>No se encontraron ancestros para este CWE.</p>
+  </ng-template>
+
+  <h3>Hijos</h3>
+  <ul *ngIf="children.length > 0; else noChildren">
+    <li *ngFor="let child of children">
+      {{ child.cweID }} - {{ child.name }}
+    </li>
+  </ul>
+  <ng-template #noChildren>
+    <p>No se encontraron hijos para este CWE.</p>
+  </ng-template>
+</div>

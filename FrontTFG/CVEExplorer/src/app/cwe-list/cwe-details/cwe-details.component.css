@@ -1,0 +1,19 @@
+.cwe-details h2,
+.cwe-details h3 {
+  margin-left: 1rem;
+}
+
+.cwe-details p {
+  margin-left: 2rem;
+  text-align: justify;
+}
+
+.cwe-details ul {
+  margin-left: 3rem;
+}
+
+@media screen and (max-width: 600px) {
+  .cwe-details h2 {
+    font-size: 1.5rem;
+  }
+}

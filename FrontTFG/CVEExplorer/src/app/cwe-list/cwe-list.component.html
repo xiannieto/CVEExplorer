@@ -1,0 +1,16 @@
+<app-home></app-home>
+<div class="cwe-list">
+  <h2>Lista de CWEs</h2>
+  <ul class="responsive-table">
+    <li class="table-header">
+      <div class="col col-1">ID</div>
+      <div class="col col-2">Nombre</div>
+      <div class="col col-3">Descripción</div>
+    </li>
+    <li class="table-row" *ngFor="let cwe of cwes">
+      <div class="col col-1" data-label="ID"><a [routerLink]="['/cwe', cwe.cweID]">{{ cwe.cweID }}</a></div>
+      <div class="col col-2" data-label="Nombre">{{ cwe.name }}</div>
+      <div class="col col-3" data-label="Descripción">{{ cwe?.description }}</div>
+    </li>
+  </ul>
+</div>

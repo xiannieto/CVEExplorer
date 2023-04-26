@@ -1,0 +1,18 @@
+<div *ngIf="queryResults">
+  <p>Result count: {{ queryResults.resultCount }}</p>
+  <p>Max score: {{ queryResults.maxScore }}</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>CVE ID</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let result of queryResults.results">
+        <td>{{ result.cveID }}</td>
+        <td>{{ result.score }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
