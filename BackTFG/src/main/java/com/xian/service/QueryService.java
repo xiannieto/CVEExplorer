@@ -25,13 +25,13 @@ import com.xian.controller.CWEController;
 import com.xian.dto.QueryDTO;
 import com.xian.model.CVE;
 
+@SuppressWarnings("deprecation")
 @Service
 @CrossOrigin(origins = "http://localhost:4200")
 public class QueryService {
 
 	private final static Logger logger = LoggerFactory.getLogger(CWEController.class);
 
-	@SuppressWarnings("deprecation")
 	@Autowired
 	private RestHighLevelClient client;
 
@@ -83,41 +83,5 @@ public class QueryService {
 		}
 		return null;
 	}
-
-//	@SuppressWarnings("deprecation")
-//	public List<CVE> searchCVEs(String cveID, String assigner, String description) {
-//		try {
-//			BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-//			if (cveID != null && !cveID.isEmpty()) {
-//				queryBuilder.must(QueryBuilders.matchQuery("cveID", cveID));
-//			}
-//			if (assigner != null && !assigner.isEmpty()) {
-//				queryBuilder.must(QueryBuilders.matchQuery("assigner", assigner));
-//			}
-//			if (description != null && !description.isEmpty()) {
-//				queryBuilder.must(QueryBuilders.matchQuery("description", description));
-//			}
-//			SearchRequest searchRequest = new SearchRequest("cve_index");
-//			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-//			searchSourceBuilder.query(queryBuilder);
-//			searchRequest.source(searchSourceBuilder);
-//			SearchResponse searchResponse = null;
-//			try {
-//				searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-//			} catch (IOException e) {
-//				logger.error("[ERROR] No se ha podido hacer la búsqueda: ", e);
-//				e.printStackTrace();
-//			}
-//			SearchHits hits = searchResponse.getHits();
-//			List<CVE> results = new ArrayList<>();
-//			for (SearchHit hit : hits) {
-//				results.add(objectMapper.convertValue(hit.getSourceAsMap(), CVE.class));
-//			}
-//			return results;
-//		} catch (Exception e) {
-//			logger.error("[ERROR] Algo ha salido mal en la busqueda: ", e);
-//		}
-//		return null;
-//	}
 
 }

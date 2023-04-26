@@ -45,7 +45,7 @@ public class CWEController {
 //		return ResponseEntity.ok(cweList);
 //	}
 //
-	@GetMapping("/cwe/{id}")
+	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<CWE> getCweById(@PathVariable("id") String id) {
 		CWE cwe = null;

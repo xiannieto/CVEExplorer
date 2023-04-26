@@ -26,7 +26,7 @@ public class CVEController {
 	@Autowired
 	private CVEService cveService;
 
-	@GetMapping("/cve")
+	@GetMapping("/")
 	@ResponseBody
 	public ResponseEntity<Object> getAllCVE() {
 		List<CVE> cveList = null;
@@ -39,7 +39,7 @@ public class CVEController {
 		return new ResponseEntity<>(cveList, HttpStatus.OK);
 	}
 
-	@GetMapping("/cve/{id}")
+	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<CVE> getCVEById(@PathVariable("id") String id) {
 		CVE cve = new CVE();

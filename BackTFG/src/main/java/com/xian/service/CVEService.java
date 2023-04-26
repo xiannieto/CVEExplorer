@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.xian.dto.QueryResultsDTO;
 import com.xian.model.CVE;
 import com.xian.model.CVE.Configuration;
 import com.xian.model.CVE.Reference;
@@ -45,7 +44,6 @@ public class CVEService {
 	public void loadFromJSON(String cveJSONPath) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			// JsonNode root = mapper.readTree(new File(cveJSONPath));
 			JsonNode root;
 			if (cveJSONPath.equals("2")) {
 				root = mapper.readTree(resourceFile2022.getInputStream());
@@ -78,38 +76,6 @@ public class CVEService {
 			logger.error("[ERROR] Error loading CVEs from " + cveJSONPath, ex);
 		}
 	}
-
-//	public void loadFromJSON(String cveJSONPath) {
-//		try {
-//			ObjectMapper mapper = new ObjectMapper();
-//			JsonNode root = mapper.readTree(new File(cveJSONPath));
-//			JsonNode cveListNode = root.get("CVE_Items");
-//			if (cveListNode.isArray()) {
-//				ArrayNode cveListArray = (ArrayNode) cveListNode;
-//				for (int i = 0; i < cveListArray.size(); i++) {
-//					JsonNode entry = cveListArray.get(i);
-//					JsonNode cveElement = entry.get("cve");
-//					CVE cve = loadCVE(cveElement);
-//
-//					JsonNode configurationsElement = entry.get("configurations");
-//					List<CVE.Configuration> configurations = loadConfigurations(configurationsElement);
-//					cve.setConfigurations(configurations);
-//					// Copy to cpeList
-//					for (CVE.Configuration configuration : configurations) {
-//						cve.getCpes().add(configuration.cpe23);
-//					}
-//					cve.setVendorProductPairs(extractVendorProductPairs(configurations));
-//
-//					JsonNode impactElement = entry.get("impact");
-//					cve.setImpact(loadImpact(impactElement));
-//
-//					cveRepository.save(cve);
-//				}
-//			}
-//		} catch (IOException ex) {
-//			logger.error("[ERROR] Error loading CVEs from " + cveJSONPath, ex);
-//		}
-//	}
 
 	private List<String> extractVendorProductPairs(List<Configuration> configurations) {
 		Set<String> result = new HashSet<>();
@@ -277,11 +243,6 @@ public class CVEService {
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido guardar el CVE:{} ", c, e);
 		}
-	}
-
-	public QueryResultsDTO findByQuery() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

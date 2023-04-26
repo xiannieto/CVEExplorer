@@ -12,7 +12,7 @@ export class CweService {
   constructor(private http: HttpClient) {}
 
   getCWEById(id: string): Observable<CWE> {
-    return this.http.get<CWE>(`${this.cweUrl}/cwe/${id}`)
+    return this.http.get<CWE>(`${this.cweUrl}/${id}`)
     .pipe(catchError(this.handleError));
   }
 
