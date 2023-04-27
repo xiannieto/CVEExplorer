@@ -9,13 +9,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.xian.model.CWE;
+import com.xian.repository.CWERepository;
 import com.xian.service.CVEService;
+import com.xian.service.CWEService;
 
 @SpringBootApplication
 public class TfgApplication implements CommandLineRunner {
 
 	@Autowired
 	private CVEService cveService;
+	@Autowired
+	private CWEService cweService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TfgApplication.class, args);
@@ -39,15 +43,17 @@ public class TfgApplication implements CommandLineRunner {
 		// Crear instancias de prueba de la clase CWE
 		CWE cwe1 = new CWE("CWE-1", "Nombre 1", "Descripción 1", "Descripción extendida 1", new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
 		CWE cwe2 = new CWE("CWE-2aaa", "Nombre 2", "Descripción 2", "Descripción extendida 2", new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
-
+		cweService.addCWE(cwe2);
 		// Utilizar el método addChild para agregar una relación entre cwe1 y cwe2
 		cwe1.addChild(cwe2);
 
 		// Verificar si el método addChild ha agregado la relación correctamente
 		Set<String> children = cwe1.getChildren();
 		Set<String> parents = cwe2.getParents();
+		
+		cweService.addCWE(cwe2);
 
-		System.out.println(cwe1.getChildren());
-		System.out.println(cwe2.getParents());
+		System.out.println(children);
+		System.out.println(parents);
 	}
 }

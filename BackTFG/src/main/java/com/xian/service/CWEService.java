@@ -190,6 +190,10 @@ public class CWEService {
 //			Logger.getLogger(CWEService.class.getName()).log(Level.SEVERE, "Error reading CWEs from " + xmlPath, ex);
 //		}
 //	}
+	
+	public void addCWE(CWE cwe) {
+		cwes.put(cwe.getCweID(), cwe);
+	}
 
 	public void loadFromXML(String xmlPath) {
 		try {
@@ -273,6 +277,8 @@ public class CWEService {
 			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loaded " + this.cwes.size() + " CWEs.");
 
 			this.roots = this.extractRoots();
+			
+			System.out.println(cwes.get("CWE-1004"));
 
 		} catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException ex) {
 			ex.printStackTrace();
@@ -412,23 +418,24 @@ public class CWEService {
 
 	public List<String> getAncestorIDs(String cweId) {
 		CWE cwe = this.cwes.get(cweId);
+		System.out.println(cwe);
 		if (cwe != null) {
+			System.out.println(cwe);
 			List<String> result = new ArrayList<>();
 			Stack<String> toProcess = new Stack<>();
 			toProcess.push(cwe.getCweID());
-
+			System.out.println(toProcess);
 			// Recorrido "primero en profundidad" invertido
 			while (!toProcess.empty()) {
 				String currentID = toProcess.pop();
 				CWE current = this.cwes.get(currentID);
 				if (current != null) {
-					result.add(currentID);
-
 					if (!current.getParents().isEmpty()) { // Anadir los padres a la Pila
 						for (String parentID : current.getParents()) {
 							if (!toProcess.contains(parentID) && !result.contains(parentID)) { // Evita repetidos
 								toProcess.push(parentID);
 							}
+							result.add(parentID);
 						}
 					}
 				}
