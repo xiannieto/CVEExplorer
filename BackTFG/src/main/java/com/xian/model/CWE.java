@@ -18,14 +18,68 @@ public class CWE {
 	private Set<String> children = new HashSet<>();
 	private Set<String> parents = new HashSet<>();
 
+	private Set<String> languages = new HashSet<>();
+	private Set<String> technologies = new HashSet<>();
+	private Set<String> operatingSystems = new HashSet<>();
+	private Set<String> architectures = new HashSet<>();
+
 	public CWE() {
 	}
 
-	public CWE(String cweID, String name, String description, String extendedDescription) {
+	public CWE(String cweID, String name, String description, String extendedDescription, Set<String> children,
+			Set<String> parents, Set<String> languages, Set<String> technologies, Set<String> operatingSystems,
+			Set<String> architectures) {
+		super();
 		this.cweID = cweID;
 		this.name = name;
 		this.description = description;
 		this.extendedDescription = extendedDescription;
+		this.children = children;
+		this.parents = parents;
+		this.languages = languages;
+		this.technologies = technologies;
+		this.operatingSystems = operatingSystems;
+		this.architectures = architectures;
+	}
+
+	public CWE(String cweID, String name, String description, String extendedDescription) {
+		super();
+		this.cweID = cweID;
+		this.name = name;
+		this.description = description;
+		this.extendedDescription = extendedDescription;
+	}
+
+	public Set<String> getLanguages() {
+		return languages;
+	}
+
+	public void setLanguages(Set<String> languages) {
+		this.languages = languages;
+	}
+
+	public Set<String> getTechnologies() {
+		return technologies;
+	}
+
+	public void setTechnologies(Set<String> technologies) {
+		this.technologies = technologies;
+	}
+
+	public Set<String> getOperatingSystems() {
+		return operatingSystems;
+	}
+
+	public void setOperatingSystems(Set<String> operatingSystems) {
+		this.operatingSystems = operatingSystems;
+	}
+
+	public Set<String> getArchitectures() {
+		return architectures;
+	}
+
+	public void setArchitectures(Set<String> architectures) {
+		this.architectures = architectures;
 	}
 
 	public void addChild(String childCWEID) {
@@ -121,7 +175,12 @@ public class CWE {
 
 	@Override
 	public String toString() {
-		return "CWE{" + "cweID=" + cweID + ", name=" + name + ", parents=" + parents + ", children=" + children + '}';
+		return "CWE [cweID=" + cweID + ", name=" + name + ", description=" + description + ", extendedDescription="
+				+ extendedDescription + ", children=" + children + ", parents=" + parents + ", languages=" + languages
+				+ ", technologies=" + technologies + ", operatingSystems=" + operatingSystems + ", architectures="
+				+ architectures + "]";
 	}
+
+
 
 }

@@ -29,27 +29,29 @@ public class CVEController {
 	@GetMapping("/")
 	@ResponseBody
 	public ResponseEntity<Object> getAllCVE() {
-		List<CVE> cveList = null;
-		try {
-			cveList = cveService.getAllCVE();
-			logger.info("[INFO] Lista de cve: {}", cveList);
-		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido obtener la lista de cves: ", e);
-		}
-		return new ResponseEntity<>(cveList, HttpStatus.OK);
+	    List<CVE> cveList = null;
+	    try {
+	        cveList = cveService.getAllCVE();
+	        logger.info("[INFO] Lista de cve: {}", cveList);
+	    } catch (Exception e) {
+	        logger.error("[ERROR] No se ha podido obtener la lista de cves: ", e);
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	    return new ResponseEntity<>(cveList, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<CVE> getCVEById(@PathVariable("id") String id) {
-		CVE cve = new CVE();
-		try {
-			cve = cveService.getCVEById(id);
-			logger.info("[INFO] Lista de cve: {}", cve);
-		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido obtener el cve {}: ", id, e);
-		}
-		return new ResponseEntity<>(cve, HttpStatus.OK);
+	    CVE cve = new CVE();
+	    try {
+	        cve = cveService.getCVEById(id);
+	        logger.info("[INFO] Lista de cve: {}", cve);
+	    } catch (Exception e) {
+	        logger.error("[ERROR] No se ha podido obtener el cve {}: ", id, e);
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	    return new ResponseEntity<>(cve, HttpStatus.OK);
 	}
 
 //	@PostMapping("/index-cve")

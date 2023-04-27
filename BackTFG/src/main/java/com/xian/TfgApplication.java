@@ -1,18 +1,38 @@
 package com.xian;
 
+import java.io.File;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.xian.service.CVEService;
+
 @SpringBootApplication
-public class TfgApplication implements CommandLineRunner {
+public class TfgApplication {
+
+	@Autowired
+	private CVEService cveService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(TfgApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-
-	}
-
+//	public void run(String... args) throws Exception {
+//		if (args.length > 0) {
+//			String jsonFilePath = args[0];
+//			File file = new File(jsonFilePath);
+//			if (file.exists() && file.isFile()) {
+//				cveService.loadFromJSON(jsonFilePath);
+//			} else {
+//				System.err
+//						.println("Error: El archivo especificado no existe o no es un archivo válido: " + jsonFilePath);
+//				System.exit(1);
+//			}
+//		} else {
+//			System.err.println("Error: Debe especificar la ruta del archivo JSON como primer argumento.");
+//			System.exit(1);
+//		}
+//	}
 }

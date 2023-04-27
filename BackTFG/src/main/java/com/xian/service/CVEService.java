@@ -1,5 +1,6 @@
 package com.xian.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,47 +36,95 @@ public class CVEService {
 	@Autowired
 	CWEService cweService;
 
+	@Value("${cve.json.path}")
+	Resource resourceFile;
+
 	@Value("file:/C:/proyectos/TFG/xian/cve-resources/nvdcve-1.1-2022.json")
 	Resource resourceFile2022;
 
 	@Value("file:/C:/proyectos/TFG/xian/cve-resources/nvdcve-1.1-2023.json")
 	Resource resourceFile2023;
 
-	public void loadFromJSON(String cveJSONPath) {
-		try {
+//	public void loadFromJSON(String cveJSONPath) {
+//		try {
+//			File file = new File(cveJSONPath);
+//			ObjectMapper mapper = new ObjectMapper();
+//			JsonNode root = mapper.readTree(file);
+//			if (cveJSONPath.equals("2")) {
+//				root = mapper.readTree(resourceFile2022.getInputStream());
+//			} else {
+//				root = mapper.readTree(resourceFile2023.getInputStream());
+//			}
+//
+//			ArrayNode cveItems = (ArrayNode) root.get("CVE_Items");
+//
+//			for (JsonNode entry : cveItems) {
+//				JsonNode cveElement = entry.get("cve");
+//				CVE cve = loadCVE(cveElement);
+//
+//				JsonNode configurationsElement = entry.get("configurations");
+//				List<CVE.Configuration> configurations = loadConfigurations(configurationsElement);
+//				cve.setConfigurations(configurations);
+//
+//				// Copy to cpeList
+//				for (CVE.Configuration configuration : configurations) {
+//					cve.getCpes().add(configuration.cpe23);
+//				}
+//				cve.setVendorProductPairs(extractVendorProductPairs(configurations));
+//
+//				JsonNode impactElement = entry.get("impact");
+//				cve.setImpact(loadImpact(impactElement));
+//
+//				cveRepository.save(cve);
+//			}
+//		} catch (IOException ex) {
+//			logger.error("[ERROR] Error loading CVEs from " + cveJSONPath, ex);
+//		}
+//	}
+	
+	public void loadFromJSON(String resourceFile2022) {
+	    try {
+//	        File file = new File(resourceFile2022);
+//	        JsonNode root = readJsonFile(file);
+			File file = new File(resourceFile2022);
 			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root;
-			if (cveJSONPath.equals("2")) {
-				root = mapper.readTree(resourceFile2022.getInputStream());
-			} else {
-				root = mapper.readTree(resourceFile2023.getInputStream());
-			}
-
-			ArrayNode cveItems = (ArrayNode) root.get("CVE_Items");
-
-			for (JsonNode entry : cveItems) {
-				JsonNode cveElement = entry.get("cve");
-				CVE cve = loadCVE(cveElement);
-
-				JsonNode configurationsElement = entry.get("configurations");
-				List<CVE.Configuration> configurations = loadConfigurations(configurationsElement);
-				cve.setConfigurations(configurations);
-
-				// Copy to cpeList
-				for (CVE.Configuration configuration : configurations) {
-					cve.getCpes().add(configuration.cpe23);
-				}
-				cve.setVendorProductPairs(extractVendorProductPairs(configurations));
-
-				JsonNode impactElement = entry.get("impact");
-				cve.setImpact(loadImpact(impactElement));
-
-				cveRepository.save(cve);
-			}
-		} catch (IOException ex) {
-			logger.error("[ERROR] Error loading CVEs from " + cveJSONPath, ex);
-		}
+			JsonNode root = mapper.readTree(file);
+	        processJsonElements(root);
+	    } catch (IOException ex) {
+	        logger.error("[ERROR] Error loading CVEs from " + resourceFile2022, ex);
+	    }
 	}
+
+	private JsonNode readJsonFile(File file) throws IOException {
+	    ObjectMapper mapper = new ObjectMapper();
+	    return mapper.readTree(file);
+	}
+
+	private void processJsonElements(JsonNode root) {
+	    ArrayNode cveItems = (ArrayNode) root.get("CVE_Items");
+
+	    for (JsonNode entry : cveItems) {
+	        JsonNode cveElement = entry.get("cve");
+	        CVE cve = loadCVE(cveElement);
+
+	        JsonNode configurationsElement = entry.get("configurations");
+	        List<CVE.Configuration> configurations = loadConfigurations(configurationsElement);
+	        cve.setConfigurations(configurations);
+
+	        // Copy to cpeList
+	        for (CVE.Configuration configuration : configurations) {
+	            cve.getCpes().add(configuration.cpe23);
+	        }
+	        cve.setVendorProductPairs(extractVendorProductPairs(configurations));
+
+	        JsonNode impactElement = entry.get("impact");
+	        cve.setImpact(loadImpact(impactElement));
+
+	        cveRepository.save(cve);
+	    }
+	}
+	
+	
 
 	private List<String> extractVendorProductPairs(List<Configuration> configurations) {
 		Set<String> result = new HashSet<>();
@@ -209,7 +258,7 @@ public class CVEService {
 		List<CVE> result = new ArrayList<CVE>();
 		try {
 			list = cveRepository.findAll();
-			if (list.equals(null)) {
+			if (list == null) {
 				logger.info("[INFO] No hay ningun CVE actualmente. ");
 				return result;
 			}
@@ -217,6 +266,7 @@ public class CVEService {
 
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido recuperar los CVE: ", e);
+			throw e;
 		}
 		return result;
 	}
