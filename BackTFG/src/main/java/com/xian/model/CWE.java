@@ -41,14 +41,14 @@ public class CWE {
 		this.operatingSystems = operatingSystems;
 		this.architectures = architectures;
 	}
-
-	public CWE(String cweID, String name, String description, String extendedDescription) {
-		super();
-		this.cweID = cweID;
-		this.name = name;
-		this.description = description;
-		this.extendedDescription = extendedDescription;
-	}
+//
+//	public CWE(String cweID, String name, String description, String extendedDescription) {
+//		super();
+//		this.cweID = cweID;
+//		this.name = name;
+//		this.description = description;
+//		this.extendedDescription = extendedDescription;
+//	}
 
 	public Set<String> getLanguages() {
 		return languages;

@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -49,6 +51,7 @@ public class CWEService {
 
 	@PostConstruct
 	public void initialize() {
+		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		loadFromXML(cweXMLPath);
 	}
 
@@ -190,6 +193,8 @@ public class CWEService {
 
 	public void loadFromXML(String xmlPath) {
 		try {
+			System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
 			this.cwes = new HashMap<>();
 			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loading CWEs from " + xmlPath);
 
@@ -268,6 +273,7 @@ public class CWEService {
 			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loaded " + this.cwes.size() + " CWEs.");
 
 			this.roots = this.extractRoots();
+
 		} catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException ex) {
 			ex.printStackTrace();
 		}
@@ -282,6 +288,24 @@ public class CWEService {
 				}
 			}
 		}
+	}
+	
+	public List<CWE> getAllCWE(){
+	    List <CWE> result = null;
+	    try {
+	        result  = StreamSupport.stream(cweRepository.findAll().spliterator(), false)
+	                .collect(Collectors.toList());
+	    }
+	    catch (IllegalArgumentException e) {
+	        // Manejar la excepción específica
+	        System.err.println("Error al recuperar los datos: " + e.getMessage());
+	        throw new IllegalArgumentException("Error al recuperar los datos", e);
+	    }
+	    catch (Exception e) {
+	        // Manejar otras excepciones no esperadas
+	        System.err.println("Error inesperado: " + e.getMessage());
+	    }
+	    return result;
 	}
 
 	public CWE findByCWEID(String cweID) {
@@ -379,6 +403,8 @@ public class CWEService {
 				if (!cwe.getName().startsWith("DEPRECATED")) {
 					result.add(cwe);
 				}
+			}else {
+				result.add(cwe);
 			}
 		}
 		return result;
@@ -412,4 +438,5 @@ public class CWEService {
 			return Collections.emptyList();
 		}
 	}
+	
 }

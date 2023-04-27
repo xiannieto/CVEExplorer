@@ -27,24 +27,24 @@ public class CWEController {
 	@Autowired
 	private CWEService cweService;
 
-//	@GetMapping("/")
-//	@ResponseBody
-//	public ResponseEntity<List<CWE>> getAllCwe() {
-//		List<CWE> cweList = null;
-//		try {
-//			cweList = cweService.getAllCWE();
-//			logger.info("[INFO] Lista de cwe: {}", cweList);
-//		} catch (Exception e) {
-//			logger.error("[ERROR] No se ha podido obtener la lista de los CWEs: ", e);
-//		}
-//
-//		if (cweList == null || cweList.isEmpty()) {
-//			return ResponseEntity.notFound().build();
-//		}
-//
-//		return ResponseEntity.ok(cweList);
-//	}
-//
+	@GetMapping("/")
+	@ResponseBody
+	public ResponseEntity<List<CWE>> getAllCwe() {
+		List<CWE> cweList = null;
+		try {
+			cweList = cweService.getAllCWE();
+			logger.info("[INFO] Lista de cwe: {}", cweList);
+		} catch (Exception e) {
+			logger.error("[ERROR] No se ha podido obtener la lista de los CWEs: ", e);
+		}
+
+		if (cweList == null || cweList.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(cweList);
+	}
+
 	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<CWE> getCweById(@PathVariable("id") String id) {
@@ -55,7 +55,7 @@ public class CWEController {
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido obtener la lista de los CWEs: ", e);
 		}
-		return new ResponseEntity<>(cwe, HttpStatus.OK);
+		return ResponseEntity.ok(cwe);
 	}
 
 	@GetMapping("{id}/ancestors")
@@ -82,7 +82,7 @@ public class CWEController {
 		List<CWE> roots = null;
 		try {
 			roots = cweService.findRoots();
-			logger.info("[INFO] Lista de CWEs raíz: {}", roots);
+			logger.info("[INFO] Cargada lista de CWEs raíz:");
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido obtener la lista de CWEs raíz: ", e);
 		}
@@ -97,19 +97,19 @@ public class CWEController {
 	@GetMapping("/{id}/getChildren")
 	@ResponseBody
 	public ResponseEntity<List<CWE>> getChildren(@PathVariable String id) {
-		List<CWE> children = null;
-		try {
-			children = cweService.getChildren(id);
-			logger.info("[INFO] Lista de hijos para el ID {}: {}", id, children);
-		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido obtener la lista de hijos para el ID {}: ", id, e);
-		}
+	    List<CWE> children = null;
+	    try {
+	        children = cweService.getChildren(id);
+	        logger.info("[INFO] Lista de hijos para el ID {}: {}", id, children);
+	    } catch (Exception e) {
+	        logger.error("[ERROR] No se ha podido obtener la lista de hijos para el ID {}: ", id, e);
+	    }
 
-		if (children == null || children.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
+	    if (children == null || children.isEmpty()) {
+	        return ResponseEntity.notFound().build();
+	    }
 
-		return ResponseEntity.ok(children);
+	    return ResponseEntity.ok(children);
 	}
 
 }

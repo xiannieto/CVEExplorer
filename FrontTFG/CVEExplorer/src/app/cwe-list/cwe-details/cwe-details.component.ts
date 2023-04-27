@@ -26,9 +26,19 @@ export class CweDetailsComponent implements OnInit {
       this.cweService.getAncestors(cweId).subscribe(ancestors => {
         this.ancestors = ancestors;
       });
-      this.cweService.getChildren(cweId).subscribe(children => {
-        this.children = children;
-      });
+      this.cweService.getChildren(cweId).subscribe(
+        children => {
+          this.children = children;
+        },
+        error => {
+          if (error.status === 404) {
+            console.error(
+              'No se han encontrado hijos para el CWE seleccionado.',
+              error.error
+            );
+          }
+        }
+      );
     }
   }
 }
