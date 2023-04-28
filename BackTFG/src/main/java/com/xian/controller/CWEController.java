@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +32,7 @@ public class CWEController {
 		List<CWE> cweList = null;
 		try {
 			cweList = cweService.getAllCWE();
-			logger.info("[INFO] Lista de cwe: {}", cweList);
+			logger.info("[INFO] Lista de CWE cargada.", cweList);
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido obtener la lista de los CWEs: ", e);
 		}
@@ -51,9 +50,9 @@ public class CWEController {
 		CWE cwe = null;
 		try {
 			cwe = cweService.findByCWEID(id);
-			logger.info("[INFO] Lista de cwe: {}", cwe);
+			logger.info("[INFO] Obtenido CWE con ID = [ {} ] : ", id);
 		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido obtener la lista de los CWEs: ", e);
+			logger.error("[ERROR] No se ha podido obtener el CWE con ID = [ {} ] : ", id, e);
 		}
 		return ResponseEntity.ok(cwe);
 	}
@@ -64,9 +63,9 @@ public class CWEController {
 		List<String> ancestors = null;
 		try {
 			ancestors = cweService.getAncestorIDs(id);
-			logger.info("[INFO] Lista de ancestros para el ID {}: {}", id, ancestors);
+			logger.info("[INFO] Lista de ancestros para el ID -- [ {} ] -- : {}", id, ancestors);
 		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido obtener la lista de ancestros para el ID {}: ", id, e);
+			logger.error("[ERROR] No se ha podido obtener la lista de ancestros para el ID [ {} ]: ", id, e);
 		}
 
 		if (ancestors == null || ancestors.isEmpty()) {
@@ -82,7 +81,7 @@ public class CWEController {
 		List<CWE> roots = null;
 		try {
 			roots = cweService.findRoots();
-			logger.info("[INFO] Cargada lista de CWEs raíz:");
+			logger.info("[INFO] Cargada lista de CWEs raíz (roots):");
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido obtener la lista de CWEs raíz: ", e);
 		}
@@ -96,13 +95,13 @@ public class CWEController {
 
 	@GetMapping("/{id}/getChildren")
 	@ResponseBody
-	public ResponseEntity<List<CWE>> getChildren(@PathVariable String id) {
-	    List<CWE> children = null;
+	public ResponseEntity<List<String>> getChildren(@PathVariable String id) {
+	    List<String> children = null;
 	    try {
 	        children = cweService.getChildren(id);
-	        logger.info("[INFO] Lista de hijos para el ID {}: {}", id, children);
+	        logger.info("[INFO] Lista de hijos para el ID -- [ {} ] -- : {}", id, children);
 	    } catch (Exception e) {
-	        logger.error("[ERROR] No se ha podido obtener la lista de hijos para el ID {}: ", id, e);
+	        logger.error("[ERROR] No se ha podido obtener la lista de hijos para el ID: [ {} ]", id, e);
 	    }
 
 	    if (children == null || children.isEmpty()) {

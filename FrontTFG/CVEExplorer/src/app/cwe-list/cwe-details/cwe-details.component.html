@@ -7,7 +7,7 @@
   <h3>Ancestros</h3>
   <ul *ngIf="ancestors.length > 0; else noAncestors">
     <li *ngFor="let ancestor of ancestors">
-      {{ ancestor }}
+      <a [routerLink]="['/cwe', 'CWE-' + ancestor]">CWE - {{ ancestor}}</a>
     </li>
   </ul>
   <ng-template #noAncestors>
@@ -17,7 +17,7 @@
   <h3>Hijos</h3>
   <ul *ngIf="children.length > 0; else noChildren">
     <li *ngFor="let child of children">
-      {{ child.cweID }} - {{ child.name }}
+      <a [routerLink]="['/cwe', child]">{{ child }}</a>
     </li>
   </ul>
   <ng-template #noChildren>

@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class CweDetailsComponent implements OnInit {
   cwe: CWE | null = null;
-  ancestors: string[] = [];
+  ancestors: CWE[] = [];
   children: CWE[] = [];
 
   constructor(
@@ -18,27 +18,19 @@ export class CweDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const cweId = this.route.snapshot.paramMap.get('id');
-    if (cweId) {
-      this.cweService.getCWEById(cweId).subscribe(cwe => {
-        this.cwe = cwe;
-      });
-      this.cweService.getAncestors(cweId).subscribe(ancestors => {
-        this.ancestors = ancestors;
-      });
-      this.cweService.getChildren(cweId).subscribe(
-        children => {
-          this.children = children;
-        },
-        error => {
-          if (error.status === 404) {
-            console.error(
-              'No se han encontrado hijos para el CWE seleccionado.',
-              error.error
-            );
-          }
-        }
-      );
-    }
+    this.route.paramMap.subscribe(params => {
+      const cweId = params.get('id');
+      if (cweId) {
+        this.cweService.getCWEById(cweId).subscribe(cwe => {
+          this.cwe = cwe;
+        });
+        this.cweService.getAncestors(cweId).subscribe(ancestors => {
+          this.ancestors = ancestors;
+        });
+        this.cweService.getChildren(cweId).subscribe(children => {
+            this.children = children;
+        });
+      }
+    });
   }
 }

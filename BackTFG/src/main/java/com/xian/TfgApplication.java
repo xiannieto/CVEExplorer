@@ -9,15 +9,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.xian.model.CWE;
-import com.xian.repository.CWERepository;
-import com.xian.service.CVEService;
 import com.xian.service.CWEService;
 
 @SpringBootApplication
 public class TfgApplication implements CommandLineRunner {
 
-	@Autowired
-	private CVEService cveService;
 	@Autowired
 	private CWEService cweService;
 

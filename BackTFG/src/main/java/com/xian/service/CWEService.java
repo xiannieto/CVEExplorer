@@ -51,7 +51,6 @@ public class CWEService {
 
 	@PostConstruct
 	public void initialize() {
-		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		loadFromXML(cweXMLPath);
 	}
 
@@ -114,31 +113,6 @@ public class CWEService {
 //			Logger.getLogger(CWEService.class.getName()).log(Level.SEVERE, "Error parsing CWEs from " + jsonPath, ex);
 //		}
 //	}
-//
-//	public void loadFromJSON2(String jsonFilePath) throws IOException {
-//		try {
-//			// Leer archivo JSON
-//			String content = Files.readString(Paths.get(jsonFilePath));
-//
-//			// Parsear JSON
-//			ObjectMapper objectMapper = new ObjectMapper();
-//			JsonNode jsonNode = objectMapper.readTree(content);
-//
-//			// Extraer información
-//			String id = jsonNode.at("ID").asText();
-//			String name = jsonNode.at("Name").asText();
-//			String description = jsonNode.at("Description").asText();
-//			String extendedDescription = jsonNode.at("Extended_Description").asText();
-//
-//			CWE cwe = new CWE("CWE-" + id, name, description, extendedDescription);
-//			cwes.put(cwe.getCweID(), cwe);
-//
-//			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loaded CWE: " + cwe.getCweID());
-//		} catch (Exception e) {
-//			Logger.getLogger(CWEService.class.getName()).log(Level.SEVERE, "Error reading CWE from " + jsonFilePath, e);
-//		}
-//	}
-
 //	public void loadFromXML(String xmlPath) {
 //		try {
 //			this.cwes = new HashMap<>();
@@ -197,8 +171,6 @@ public class CWEService {
 
 	public void loadFromXML(String xmlPath) {
 		try {
-			System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-
 			this.cwes = new HashMap<>();
 			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loading CWEs from " + xmlPath);
 
@@ -210,11 +182,14 @@ public class CWEService {
 			NodeList weaknesses = (NodeList) xPath.evaluate("/Weakness_Catalog/Weaknesses/Weakness", document,
 					XPathConstants.NODESET);
 			int weaknessItems = weaknesses.getLength();
+			
 			for (int i = 0; i < weaknessItems; i++) {
 				Element weakness = (Element) weaknesses.item(i);
+				
 				// Optimizacion, evita carga lenta al final de la lista
 				// (https://stackoverflow.com/questions/3782618/xpath-evaluate-performance-slows-down-absurdly-over-multiple-calls)
 				weakness.getParentNode().removeChild(weakness);
+
 
 				String id = xPath.evaluate("@ID", weakness);
 				String name = xPath.evaluate("@Name", weakness);
@@ -271,14 +246,12 @@ public class CWEService {
 				}
 
 				cwes.put(cwe.getCweID(), cwe);
-			}
 
+			}
 			attachChildren();
 			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loaded " + this.cwes.size() + " CWEs.");
 
 			this.roots = this.extractRoots();
-			
-			System.out.println(cwes.get("CWE-1004"));
 
 		} catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException ex) {
 			ex.printStackTrace();
@@ -288,7 +261,7 @@ public class CWEService {
 	private void attachChildren() {
 		for (CWE cwe : cwes.values()) {
 			for (String parentCWE : cwe.getParents()) {
-				CWE parent = cwes.get(parentCWE);
+				CWE parent = cwes.get("CWE-"+parentCWE);
 				if (parent != null) {
 					parent.addChild(cwe.getCweID());
 				}
@@ -303,12 +276,10 @@ public class CWEService {
 	                .collect(Collectors.toList());
 	    }
 	    catch (IllegalArgumentException e) {
-	        // Manejar la excepción específica
 	        System.err.println("Error al recuperar los datos: " + e.getMessage());
 	        throw new IllegalArgumentException("Error al recuperar los datos", e);
 	    }
 	    catch (Exception e) {
-	        // Manejar otras excepciones no esperadas
 	        System.err.println("Error inesperado: " + e.getMessage());
 	    }
 	    return result;
@@ -358,14 +329,14 @@ public class CWEService {
 		}
 	}
 
-	public List<CWE> getChildren(String cweId) {
+	public List<String> getChildren(String cweId) {
 		List<String> childrenIDs = this.getChildrenIDs(cweId);
 		if ((childrenIDs != null) && !childrenIDs.isEmpty()) {
-			List<CWE> result = new ArrayList<>();
+			List<String> result = new ArrayList<>();
 			for (String childID : childrenIDs) {
 				CWE child = this.cwes.get(childID);
-				if (child != null) {
-					result.add(child);
+				if (this.cwes.get(childID) != null) {
+					result.add(child.getCweID());
 				}
 			}
 			return result;
@@ -418,13 +389,10 @@ public class CWEService {
 
 	public List<String> getAncestorIDs(String cweId) {
 		CWE cwe = this.cwes.get(cweId);
-		System.out.println(cwe);
 		if (cwe != null) {
-			System.out.println(cwe);
 			List<String> result = new ArrayList<>();
 			Stack<String> toProcess = new Stack<>();
 			toProcess.push(cwe.getCweID());
-			System.out.println(toProcess);
 			// Recorrido "primero en profundidad" invertido
 			while (!toProcess.empty()) {
 				String currentID = toProcess.pop();

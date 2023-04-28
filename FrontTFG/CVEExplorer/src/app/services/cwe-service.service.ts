@@ -16,9 +16,14 @@ export class CweService {
     .pipe(catchError(this.handleError));
   }
 
-  getAncestors(id: string): Observable<string[]> {
-    return this.http.get<string[]>(`${this.cweUrl}/${id}/ancestors`)
-    .pipe(catchError(this.handleError));
+  getAncestors(id: string): Observable<CWE[]> {
+    return this.http.get<CWE[]>(`${this.cweUrl}/${id}/ancestors`)
+    .pipe(
+      catchError(error => {
+        console.error('Error al obtener los hijos del CWE:', error);
+        return of([]);
+      })
+    );
   }
 
   findRoots(): Observable<CWE[]> {
