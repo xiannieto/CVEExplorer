@@ -50,9 +50,9 @@ public class CWEController {
 		CWE cwe = null;
 		try {
 			cwe = cweService.findByCWEID(id);
-			logger.info("[INFO] Obtenido CWE con ID = [ {} ] : ", id);
+			logger.info("[INFO] Obtenido CWE con ID = [ {} ] : {}", id, cwe);
 		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido obtener el CWE con ID = [ {} ] : ", id, e);
+			logger.error("[ERROR] No se ha podido obtener el CWE con ID = [ {} ]: ", id, e);
 		}
 		return ResponseEntity.ok(cwe);
 	}
@@ -81,7 +81,7 @@ public class CWEController {
 		List<CWE> roots = null;
 		try {
 			roots = cweService.findRoots();
-			logger.info("[INFO] Cargada lista de CWEs raíz (roots):");
+			logger.info("[INFO] Cargada lista de CWEs raíz (roots).");
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido obtener la lista de CWEs raíz: ", e);
 		}

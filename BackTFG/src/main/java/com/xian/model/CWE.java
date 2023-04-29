@@ -41,46 +41,6 @@ public class CWE {
 		this.operatingSystems = operatingSystems;
 		this.architectures = architectures;
 	}
-//
-//	public CWE(String cweID, String name, String description, String extendedDescription) {
-//		super();
-//		this.cweID = cweID;
-//		this.name = name;
-//		this.description = description;
-//		this.extendedDescription = extendedDescription;
-//	}
-
-	public Set<String> getLanguages() {
-		return languages;
-	}
-
-	public void setLanguages(Set<String> languages) {
-		this.languages = languages;
-	}
-
-	public Set<String> getTechnologies() {
-		return technologies;
-	}
-
-	public void setTechnologies(Set<String> technologies) {
-		this.technologies = technologies;
-	}
-
-	public Set<String> getOperatingSystems() {
-		return operatingSystems;
-	}
-
-	public void setOperatingSystems(Set<String> operatingSystems) {
-		this.operatingSystems = operatingSystems;
-	}
-
-	public Set<String> getArchitectures() {
-		return architectures;
-	}
-
-	public void setArchitectures(Set<String> architectures) {
-		this.architectures = architectures;
-	}
 
 	public void addChild(String childCWEID) {
 		this.children.add(childCWEID);
@@ -148,29 +108,59 @@ public class CWE {
 		this.parents = parents;
 	}
 
+	public Set<String> getLanguages() {
+		return languages;
+	}
+
+	public void setLanguages(Set<String> languages) {
+		this.languages = languages;
+	}
+
+	public Set<String> getTechnologies() {
+		return technologies;
+	}
+
+	public void setTechnologies(Set<String> technologies) {
+		this.technologies = technologies;
+	}
+
+	public Set<String> getOperatingSystems() {
+		return operatingSystems;
+	}
+
+	public void setOperatingSystems(Set<String> operatingSystems) {
+		this.operatingSystems = operatingSystems;
+	}
+
+	public Set<String> getArchitectures() {
+		return architectures;
+	}
+
+	public void setArchitectures(Set<String> architectures) {
+		this.architectures = architectures;
+	}
+
 	@Override
 	public int hashCode() {
-		int hash = 5;
-		hash = 23 * hash + Objects.hashCode(this.cweID);
-		return hash;
+		return Objects.hash(architectures, children, cweID, description, extendedDescription, languages, name,
+				operatingSystems, parents, technologies);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		final CWE other = (CWE) obj;
-		if (!Objects.equals(this.cweID, other.cweID)) {
-			return false;
-		}
-		return true;
+		CWE other = (CWE) obj;
+		return Objects.equals(architectures, other.architectures) && Objects.equals(children, other.children)
+				&& Objects.equals(cweID, other.cweID) && Objects.equals(description, other.description)
+				&& Objects.equals(extendedDescription, other.extendedDescription)
+				&& Objects.equals(languages, other.languages) && Objects.equals(name, other.name)
+				&& Objects.equals(operatingSystems, other.operatingSystems) && Objects.equals(parents, other.parents)
+				&& Objects.equals(technologies, other.technologies);
 	}
 
 	@Override
@@ -180,7 +170,5 @@ public class CWE {
 				+ ", technologies=" + technologies + ", operatingSystems=" + operatingSystems + ", architectures="
 				+ architectures + "]";
 	}
-
-
 
 }

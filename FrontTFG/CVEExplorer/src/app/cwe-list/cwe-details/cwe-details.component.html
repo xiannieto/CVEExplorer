@@ -23,4 +23,40 @@
   <ng-template #noChildren>
     <p>No se encontraron hijos para este CWE.</p>
   </ng-template>
+  <h3>Lenguajes</h3>
+  <ul *ngIf="cwe.languages.size > 0; else noLanguages">
+    <li *ngFor="let language of languagesArray">{{ language }}</li>
+  </ul>
+  <ng-template #noLanguages>
+    <p>No se encontraron lenguajes para este CWE.</p>
+  </ng-template>
+  <button (click)="logCWE()">Log CWE Info</button>
+
+  <button (click)="logTechnologiesSize()">Log Technologies Size</button>
+
+  <button (click)="logTechnologiesInfo()">Log Technologies Info</button>
+  <h3>Tecnologías</h3>
+  <ul *ngIf="cwe.technologies.size > 0; else noTechnologies">
+    <h3>Tecnologías</h3>
+    <li *ngFor="let technology of technologiesArray">{{ technology }}</li>
+  </ul>
+  <ng-template #noTechnologies>
+    <p>No se encontraron tecnologías para este CWE.</p>
+  </ng-template>
+
+  <h3>Sistemas operativos</h3>
+  <ul *ngIf="cwe.operatingSystems.size > 0; else noOperatingSystems">
+    <li *ngFor="let operatingSystem of operatingSystemsArray">{{ operatingSystem }}</li>
+  </ul>
+  <ng-template #noOperatingSystems>
+    <p>No se encontraron sistemas operativos para este CWE.</p>
+  </ng-template>
+
+  <h3>Arquitecturas</h3>
+  <ul *ngIf="cwe.architectures.size > 0; else noArchitectures">
+    <li *ngFor="let architecture of architecturesArray">{{ architecture }}</li>
+  </ul>
+  <ng-template #noArchitectures>
+    <p>No se encontraron arquitecturas para este CWE.</p>
+  </ng-template>
 </div>
