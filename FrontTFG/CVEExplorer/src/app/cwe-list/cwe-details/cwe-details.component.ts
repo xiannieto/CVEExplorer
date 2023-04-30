@@ -7,7 +7,9 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'app-cwe-details',
   templateUrl: './cwe-details.component.html',
   styleUrls: ['./cwe-details.component.css']
-})export class CweDetailsComponent implements OnInit {
+})
+
+export class CweDetailsComponent implements OnInit {
   cwe: CWE | null = null;
   ancestors: CWE[] = [];
   children: CWE[] = [];
@@ -35,30 +37,38 @@ import { ActivatedRoute } from '@angular/router';
   }
 
   get languagesArray() {
-    return this.cwe ? Array.from(this.cwe.languages) : [];
+    if (this.cwe) {
+      if (Array.isArray(this.cwe.languages)) {
+        return this.cwe.languages.filter(language => language !== '');
+      }
+    }
+    return [];
   }
 
   get technologiesArray() {
-    return this.cwe ? Array.from(this.cwe.technologies) : [];
+    if (this.cwe) {
+      if (Array.isArray(this.cwe.technologies)) {
+        return this.cwe.technologies.filter(technology => technology !== '');
+      }
+    }
+    return [];
   }
 
   get operatingSystemsArray() {
-    return this.cwe ? Array.from(this.cwe.operatingSystems) : [];
+    if (this.cwe) {
+      if (Array.isArray(this.cwe.operatingSystems)) {
+        return this.cwe.operatingSystems.filter(os => os !== '');
+      }
+    }
+    return [];
   }
 
   get architecturesArray() {
-    return this.cwe ? Array.from(this.cwe.architectures) : [];
+    if (this.cwe) {
+      if (Array.isArray(this.cwe.architectures)) {
+        return this.cwe.architectures.filter(architecture => architecture !== '');
+      }
+    }
+    return [];
   }
-
-  logTechnologiesInfo() {
-    console.log('cwe.technologies.size:', this.cwe?.technologies.size);
-    console.log('technologiesArray:', this.technologiesArray);
-  }
-  logCWE() {
-    console.log(this.cwe);
-  }
-  logTechnologiesSize() {
-    console.log('cwe.technologies.size:', this.cwe?.technologies.size);
-  }
-
 }

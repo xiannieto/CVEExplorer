@@ -1,62 +1,80 @@
 <app-home></app-home>
 <div class="cwe-details" *ngIf="cwe">
-  <h2>{{ cwe.cweID }} - {{ cwe.name }}</h2>
-  <p>{{ cwe.description }}</p>
-  <p>{{ cwe.extendedDescription }}</p>
-
-  <h3>Ancestros</h3>
-  <ul *ngIf="ancestors.length > 0; else noAncestors">
-    <li *ngFor="let ancestor of ancestors">
-      <a [routerLink]="['/cwe', 'CWE-' + ancestor]">CWE - {{ ancestor}}</a>
+  <h2>Detalles del {{ cwe.cweID }} </h2>
+  <ul class="responsive-table">
+    <li class="table-row">
+      <div class="col col-1" data-label="ID">ID</div>
+      <div class="col col-2">{{ cwe.cweID }}</div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Nombre">Nombre</div>
+      <div class="col col-2">{{ cwe.name }}</div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Descripción">Descripción</div>
+      <div class="col col-2">{{ cwe.description }}</div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Descripción extendida">Descripción extendida</div>
+      <div class="col col-2">{{ cwe.extendedDescription }}</div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Ancestros">Ancestros</div>
+      <div class="col col-2">
+        <ul *ngIf="ancestors.length > 0; else noAncestors">
+          <li *ngFor="let ancestor of ancestors">
+            <a [routerLink]="['/cwe', 'CWE-' + ancestor]">CWE - {{ ancestor}}</a>
+          </li>
+        </ul>
+        <ng-template #noAncestors>No se encontraron ancestros para este CWE.</ng-template>
+      </div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Hijos">Hijos</div>
+      <div class="col col-2">
+        <ul *ngIf="children.length > 0; else noChildren">
+          <li *ngFor="let child of children">
+            <a [routerLink]="['/cwe', child]">{{ child }}</a>
+          </li>
+        </ul>
+        <ng-template #noChildren>No se encontraron hijos para este CWE.</ng-template>
+      </div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Lenguajes">Lenguajes</div>
+      <div class="col col-2">
+        <ul *ngIf="languagesArray.length > 0; else noLanguages">
+          <li *ngFor="let language of languagesArray">{{ language }}</li>
+        </ul>
+        <ng-template #noLanguages>No se encontraron lenguajes para este CWE.</ng-template>
+      </div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Tecnologías">Tecnologías</div>
+      <div class="col col-2">
+        <ul *ngIf="technologiesArray.length > 0; else noTechnologies">
+          <li *ngFor="let technology of technologiesArray">{{ technology }}</li>
+        </ul>
+        <ng-template #noTechnologies>No se encontraron tecnologías para este CWE.</ng-template>
+      </div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Sistemas operativos">Sistemas operativos</div>
+      <div class="col col-2">
+        <ul *ngIf="operatingSystemsArray.length > 0; else noOperatingSystems">
+          <li *ngFor="let operatingSystem of operatingSystemsArray">{{ operatingSystem }}</li>
+        </ul>
+        <ng-template #noOperatingSystems>No se encontraron sistemas operativos para este CWE.</ng-template>
+      </div>
+    </li>
+    <li class="table-row">
+      <div class="col col-1" data-label="Arquitecturas">Arquitecturas</div>
+      <div class="col col-2">
+        <ul *ngIf="architecturesArray.length > 0; else noArchitectures">
+          <li *ngFor="let architecture of architecturesArray">{{ architecture }}</li>
+        </ul>
+        <ng-template #noArchitectures>No se encontraron arquitecturas para este CWE.</ng-template>
+      </div>
     </li>
   </ul>
-  <ng-template #noAncestors>
-    <p>No se encontraron ancestros para este CWE.</p>
-  </ng-template>
-
-  <h3>Hijos</h3>
-  <ul *ngIf="children.length > 0; else noChildren">
-    <li *ngFor="let child of children">
-      <a [routerLink]="['/cwe', child]">{{ child }}</a>
-    </li>
-  </ul>
-  <ng-template #noChildren>
-    <p>No se encontraron hijos para este CWE.</p>
-  </ng-template>
-  <h3>Lenguajes</h3>
-  <ul *ngIf="cwe.languages.size > 0; else noLanguages">
-    <li *ngFor="let language of languagesArray">{{ language }}</li>
-  </ul>
-  <ng-template #noLanguages>
-    <p>No se encontraron lenguajes para este CWE.</p>
-  </ng-template>
-  <button (click)="logCWE()">Log CWE Info</button>
-
-  <button (click)="logTechnologiesSize()">Log Technologies Size</button>
-
-  <button (click)="logTechnologiesInfo()">Log Technologies Info</button>
-  <h3>Tecnologías</h3>
-  <ul *ngIf="cwe.technologies.size > 0; else noTechnologies">
-    <h3>Tecnologías</h3>
-    <li *ngFor="let technology of technologiesArray">{{ technology }}</li>
-  </ul>
-  <ng-template #noTechnologies>
-    <p>No se encontraron tecnologías para este CWE.</p>
-  </ng-template>
-
-  <h3>Sistemas operativos</h3>
-  <ul *ngIf="cwe.operatingSystems.size > 0; else noOperatingSystems">
-    <li *ngFor="let operatingSystem of operatingSystemsArray">{{ operatingSystem }}</li>
-  </ul>
-  <ng-template #noOperatingSystems>
-    <p>No se encontraron sistemas operativos para este CWE.</p>
-  </ng-template>
-
-  <h3>Arquitecturas</h3>
-  <ul *ngIf="cwe.architectures.size > 0; else noArchitectures">
-    <li *ngFor="let architecture of architecturesArray">{{ architecture }}</li>
-  </ul>
-  <ng-template #noArchitectures>
-    <p>No se encontraron arquitecturas para este CWE.</p>
-  </ng-template>
 </div>

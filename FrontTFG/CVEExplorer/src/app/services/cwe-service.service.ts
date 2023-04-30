@@ -23,7 +23,7 @@ export class CweService {
     return this.http.get<CWE[]>(`${this.cweUrl}/${id}/ancestors`)
     .pipe(
       catchError(error => {
-        console.error('Error al obtener los hijos del CWE:', error);
+        console.error('Error al obtener los padres del CWE:', error);
         return of([]);
       })
     );
