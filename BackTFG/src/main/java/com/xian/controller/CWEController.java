@@ -32,7 +32,7 @@ public class CWEController {
 		List<CWE> cweList = null;
 		try {
 			cweList = cweService.getAllCWE();
-			logger.info("[INFO] Lista de CWE cargada.", cweList);
+			logger.info("[INFO] Lista de CWE cargada con éxito!");
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido obtener la lista de los CWEs: ", e);
 		}

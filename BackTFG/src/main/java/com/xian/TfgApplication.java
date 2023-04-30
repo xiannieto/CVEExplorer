@@ -48,8 +48,8 @@ public class TfgApplication implements CommandLineRunner {
 		Set<String> parents = cwe2.getParents();
 		
 		cweService.addCWE(cwe2);
-
-		System.out.println(children);
-		System.out.println(parents);
+//
+//		System.out.println(children);
+//		System.out.println(parents);
 	}
 }

@@ -32,7 +32,7 @@ public class CVEController {
 	    List<CVE> cveList = null;
 	    try {
 	        cveList = cveService.getAllCVE();
-	        logger.info("[INFO] Lista de cve: {}", cveList);
+	        logger.info("[INFO] Lista de cve argada con éxito!");
 	    } catch (Exception e) {
 	        logger.error("[ERROR] No se ha podido obtener la lista de cves: ", e);
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -46,7 +46,7 @@ public class CVEController {
 	    CVE cve = new CVE();
 	    try {
 	        cve = cveService.getCVEById(id);
-	        logger.info("[INFO] Lista de cve: {}", cve);
+	        logger.info("[INFO] Obtenido CVW con ID = [ {} ] : {}", id, cve);
 	    } catch (Exception e) {
 	        logger.error("[ERROR] No se ha podido obtener el cve {}: ", id, e);
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

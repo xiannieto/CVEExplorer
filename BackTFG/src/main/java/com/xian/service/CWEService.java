@@ -252,7 +252,6 @@ public class CWEService {
 			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loaded " + this.cwes.size() + " CWEs.");
 
 			this.roots = this.extractRoots();
-			System.out.println(cwes.get("CWE-1037"));
 		} catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException ex) {
 			ex.printStackTrace();
 		}
