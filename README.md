@@ -24,3 +24,6 @@ user/user
 
 
 ---------- SERVIDOR FRONT END ----------
+
+Arrancar FRONT Angular (desde CVEExplorar/src/app): 
+npm start
