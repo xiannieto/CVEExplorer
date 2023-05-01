@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 
 public class QueryDTO implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String description; // Cadena/s a buscar en el campo descripcion
 	private String assigner; // Cadena/s a buscar en el campo assigner
 	private List<String> cwes; // Lista de IDs de CWEs a buscar (tanto en el campo cwes como en el

@@ -1,7 +1,5 @@
 package com.xian.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xian.dto.QueryDTO;
-import com.xian.model.CVE;
+import com.xian.dto.QueryResultsDTO;
 import com.xian.service.QueryService;
 
 @RestController
@@ -28,14 +26,15 @@ public class QueryController {
 	private QueryService queryService;
 
 	@PostMapping("/search")
-	public ResponseEntity<List<CVE>> search(@RequestBody QueryDTO queryDTO) {
-		List<CVE> results = null;
+	public ResponseEntity<QueryResultsDTO> search(@RequestBody QueryDTO queryDTO) {
+		QueryResultsDTO results = null;
 		try {
 			results = queryService.searchCVEs(queryDTO);
+			logger.info("[INFO] Query encontrada con éxito! DTO: {}", results);
 		} catch (Exception e) {
-
+			logger.error("[ERROR] Error al realizar la consulta.", e);
 		}
-		return new ResponseEntity<List<CVE>>(results, HttpStatus.OK);
+		return new ResponseEntity<QueryResultsDTO>(results, HttpStatus.OK);
 	}
 
 }

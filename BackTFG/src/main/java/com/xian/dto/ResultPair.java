@@ -1,13 +1,15 @@
 package com.xian.dto;
 
+import java.util.Objects;
+
 public class ResultPair {
     public String cveID;
-    public Double score;
+    public float score;
     
     public ResultPair() {
     }
     
-    public ResultPair(String cveID, Double score) {
+    public ResultPair(String cveID, float score) {
         this.cveID = cveID;
         this.score = score;
     }
@@ -20,11 +22,11 @@ public class ResultPair {
         this.cveID = cveID;
     }
 
-    public Double getScore() {
+    public float getScore() {
         return score;
     }
 
-    public void setScore(Double score) {
+    public void setScore(float score) {
         this.score = score;
     }
 
@@ -33,36 +35,22 @@ public class ResultPair {
         return "ResultPair [cveID=" + cveID + ", score=" + score + "]";
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((cveID == null) ? 0 : cveID.hashCode());
-        result = prime * result + ((score == null) ? 0 : score.hashCode());
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(cveID, score);
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ResultPair other = (ResultPair) obj;
-        if (cveID == null) {
-            if (other.cveID != null)
-                return false;
-        } else if (!cveID.equals(other.cveID))
-            return false;
-        if (score == null) {
-            if (other.score != null)
-                return false;
-        } else if (!score.equals(other.score))
-            return false;
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ResultPair other = (ResultPair) obj;
+		return Objects.equals(cveID, other.cveID) && Float.floatToIntBits(score) == Float.floatToIntBits(other.score);
+	}
 
     
 }

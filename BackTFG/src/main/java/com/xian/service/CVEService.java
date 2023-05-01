@@ -87,8 +87,7 @@ public class CVEService {
 //	        File file = new File(resourceFile2022);
 //	        JsonNode root = readJsonFile(file);
 			File file = new File(resourceFile2022);
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(file);
+			JsonNode root = readJsonFile(file);
 	        processJsonElements(root);
 	    } catch (IOException ex) {
 	        logger.error("[ERROR] Error loading CVEs from " + resourceFile2022, ex);

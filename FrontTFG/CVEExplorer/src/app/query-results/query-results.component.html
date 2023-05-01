@@ -1,18 +1,14 @@
 <div *ngIf="queryResults">
-  <p>Result count: {{ queryResults.resultCount }}</p>
-  <p>Max score: {{ queryResults.maxScore }}</p>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>CVE ID</th>
-        <th>Score</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let result of queryResults.results">
-        <td>{{ result.cveID }}</td>
-        <td>{{ result.score }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <h2>Resultados de la consulta</h2>
+  <ul class="responsive-table">
+    <li class="table-header">
+      <div class="col col-1">CVE ID</div>
+      <div class="col col-2">Score<br><span style="font-weight: normal;">Max score: {{ queryResults.maxScore }}</span></div>
+      <div class ="col col-3">Result count: {{ queryResults.resultCount }}</div>
+    </li>
+    <li class="table-row" *ngFor="let result of queryResults.results">
+      <div class="col col-1" data-label="CVE ID"><a [routerLink]="['/cve', result.cveID]">{{ result.cveID }}</a></div>
+      <div class="col col-2" data-label="Score">{{ result.score }}</div>
+    </li>
+  </ul>
 </div>
