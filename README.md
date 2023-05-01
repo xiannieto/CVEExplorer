@@ -7,7 +7,7 @@ SpringBoot: 3.0.2
 
 ElasticSearch: elasticsearch-8.5.3
 
-Angular: 13.01
+Angular: 15.2.8
 
 
 
@@ -21,3 +21,6 @@ curl -u elastic http://localhost:9200
 
 Credenciales:
 user/user
+
+
+---------- SERVIDOR FRONT END ----------
