@@ -13,7 +13,7 @@ Angular: 15.2.8
 
 ---------- SERVIDOR ELASTICSEARCH ----------
 
-Arrancar Servidor Elastic (desde cmd en la ruta del servidor):
+Arrancar Servidor Elastic (desde cmd en la ruta del servidor):\n
 .\bin\elasticsearch.bat
 
 Recuperar usuario
@@ -25,5 +25,5 @@ user/user
 
 ---------- SERVIDOR FRONT END ----------
 
-Arrancar FRONT Angular (desde CVEExplorar/src/app): 
+Arrancar FRONT Angular (desde CVEExplorar/src/app): \n
 npm start
