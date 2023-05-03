@@ -1,25 +1,11 @@
 package com.xian;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.xian.model.CWE;
-import com.xian.service.CVEService;
-import com.xian.service.CWEService;
-
 @SpringBootApplication
 public class TfgApplication implements CommandLineRunner {
-
-//	@Autowired
-//	private CWEService cweService;
-//	
-//	@Autowired
-//	private CVEService cveService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TfgApplication.class, args);

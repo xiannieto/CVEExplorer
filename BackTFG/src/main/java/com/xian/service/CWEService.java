@@ -11,12 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,6 +41,10 @@ import jakarta.annotation.PostConstruct;
 
 @Service
 public class CWEService {
+	
+	private final static Logger logger = LoggerFactory.getLogger(CWEService.class);
+
+	
 	private Map<String, CWE> cwes = new HashMap<>();
 
 	private List<CWE> roots;
@@ -51,6 +56,7 @@ public class CWEService {
 
 	@PostConstruct
 	public void initialize() {
+		logger.info("[INFO] Cargando CWES desde: " + cweXMLPath);
 		loadFromXML(cweXMLPath);
 	}
 
@@ -165,14 +171,9 @@ public class CWEService {
 //		}
 //	}
 	
-	public void addCWE(CWE cwe) {
-		cwes.put(cwe.getCweID(), cwe);
-	}
-
 	public void loadFromXML(String xmlPath) {
 		try {
 			this.cwes = new HashMap<>();
-			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loading CWEs from " + xmlPath);
 
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document document = builder.parse(new FileInputStream(xmlPath));
@@ -249,8 +250,7 @@ public class CWEService {
 
 			}
 			attachChildren();
-			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loaded " + this.cwes.size() + " CWEs.");
-
+			logger.info("[INFO] Cargados " + this.cwes.size() + " CWEs.");
 			this.roots = this.extractRoots();
 		} catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException ex) {
 			ex.printStackTrace();

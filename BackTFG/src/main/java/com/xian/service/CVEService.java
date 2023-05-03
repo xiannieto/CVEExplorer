@@ -3,6 +3,7 @@ package com.xian.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public class CVEService {
 
 	@PostConstruct
 	public void initialize() {
-		System.out.println("Cargando CVEs... ");
+		logger.info("[INFO] Cargando CVES desde: " + resourceFile2022);
 		loadFromJSON(resourceFile2022);
 	}
 
@@ -103,7 +104,7 @@ public class CVEService {
 		if (!cvesToSave.isEmpty()) {
 			cveRepository.saveAll(cvesToSave);
 		}
-		System.out.println("Cargados " + cveCount + " CVEs.");
+		logger.info("[INFO] Cargados " + cveCount + " CVEs.");
 	}
 
 	private List<String> extractVendorProductPairs(List<Configuration> configurations) {
@@ -232,18 +233,23 @@ public class CVEService {
 		return impact;
 	}
 
-	public List<CVE> getAllCVE(){
-	    List <CVE> result = null;
+	public List<CVE> getAllCVE() {
+	    Iterable<CVE> list = new ArrayList<>();
+	    List<CVE> result = new ArrayList<CVE>();
 	    try {
-	        result  = StreamSupport.stream(cveRepository.findAll().spliterator(), false)
-	                .collect(Collectors.toList());
-	    }
-	    catch (IllegalArgumentException e) {
-	        System.err.println("Error al recuperar los datos: " + e.getMessage());
-	        throw new IllegalArgumentException("Error al recuperar los datos", e);
-	    }
-	    catch (Exception e) {
-	        System.err.println("Error inesperado: " + e.getMessage());
+	        logger.info("[DEBUG] Llamando a cveRepository.findAll()");
+	        list = cveRepository.findAll();
+	        logger.info("[DEBUG] cveRepository.findAll() devolvió {} elementos", ((Collection<?>) list).size());
+	        if (list == null) {
+	            logger.info("[INFO] No hay ningun CVE actualmente. ");
+	            return result;
+	        }
+	        System.out.println(list);
+	        result = StreamSupport.stream(list.spliterator(), false).collect(Collectors.toList());
+
+	    } catch (Exception e) {
+	        logger.error("[ERROR] No se ha podido recuperar los CVE: ", e);
+	        throw e;
 	    }
 	    return result;
 	}

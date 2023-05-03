@@ -50,7 +50,7 @@ public class CVEController {
 	        cve = cveService.getCVEById(id);
 	        logger.info("[INFO] Obtenido CVE con ID = [ {} ] : {}", id, cve);
 	    } catch (Exception e) {
-	        logger.error("[ERROR] No se ha podido obtener el cve {}: ", id, e);
+	        logger.error("[ERROR] No se ha podido obtener el CVE {}: ", id, e);
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	    return  ResponseEntity.ok(cve);
