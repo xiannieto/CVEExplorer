@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import com.xian.service.CVEService;
 @RestController
 @RequestMapping("/api/cves")
 @Transactional
+@CrossOrigin
 public class CVEController {
 	private final static Logger logger = LoggerFactory.getLogger(CVEController.class);
 
@@ -32,12 +34,12 @@ public class CVEController {
 	    List<CVE> cveList = null;
 	    try {
 	        cveList = cveService.getAllCVE();
-	        logger.info("[INFO] Lista de cve argada con éxito!");
+	        logger.info("[INFO] Lista de cve argada con éxito! : {}", cveList);
 	    } catch (Exception e) {
 	        logger.error("[ERROR] No se ha podido obtener la lista de cves: ", e);
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
-	    return new ResponseEntity<>(cveList, HttpStatus.OK);
+	    return  ResponseEntity.ok(cveList);
 	}
 
 	@GetMapping("/{id}")
@@ -46,12 +48,12 @@ public class CVEController {
 	    CVE cve = new CVE();
 	    try {
 	        cve = cveService.getCVEById(id);
-	        logger.info("[INFO] Obtenido CVW con ID = [ {} ] : {}", id, cve);
+	        logger.info("[INFO] Obtenido CVE con ID = [ {} ] : {}", id, cve);
 	    } catch (Exception e) {
 	        logger.error("[ERROR] No se ha podido obtener el cve {}: ", id, e);
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
-	    return new ResponseEntity<>(cve, HttpStatus.OK);
+	    return  ResponseEntity.ok(cve);
 	}
 
 //	@PostMapping("/index-cve")

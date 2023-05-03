@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { QueryService } from '../services/query-service.service';
 import { QueryDTO } from '../models/queryDTO.model';
 import { QueryResultsDTO } from '../models/queryResultDTO.model';
@@ -8,11 +8,21 @@ import { QueryResultsDTO } from '../models/queryResultDTO.model';
   templateUrl: './query-form.component.html',
   styleUrls: ['./query-form.component.css']
 })
-export class QueryFormComponent {
+export class QueryFormComponent implements OnInit {
+  cwes: string[] = [];
+  vendors: string[] = [];
+  vendorProductPairs: string[] = [];
+  attackVectors: string[] = [];
   queryDTO: QueryDTO = new QueryDTO();
   queryResultsDTO!: QueryResultsDTO | undefined;
 
   constructor(private queryService: QueryService) {}
+
+  ngOnInit() {
+    this.queryService.getQueryCwes().subscribe(data => {
+      this.cwes = data;
+    });
+  }
 
   onSubmit() {
     this.queryService.search(this.queryDTO).subscribe((data: QueryResultsDTO) => {

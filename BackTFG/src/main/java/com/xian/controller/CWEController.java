@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import com.xian.service.CWEService;
 @RestController
 @RequestMapping("/api/cwes")
 @Transactional
+@CrossOrigin
 public class CWEController {
 
 	private final static Logger logger = LoggerFactory.getLogger(CWEController.class);

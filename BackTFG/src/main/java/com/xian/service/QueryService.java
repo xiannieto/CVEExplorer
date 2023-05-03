@@ -13,6 +13,8 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +47,16 @@ public class QueryService {
 	        }
 	        if (queryDTO.getAssigner() != null && !queryDTO.getAssigner().isEmpty()) {
 	            queryBuilder.must(QueryBuilders.matchQuery("assigner", queryDTO.getAssigner()));
-	    		logger.info("Dentro de ASSIGNER: {}", queryDTO.getAssigner());
 	        }
 	        if (queryDTO.getCwes() != null && !queryDTO.getCwes().isEmpty()) {
-	            queryBuilder.must(QueryBuilders.termsQuery("cwesWithAncestors", queryDTO.getCwes()));
+		        System.out.println("ANTES DE CWES --------------------- DTO: " + queryDTO);
+
+	            queryBuilder.should(QueryBuilders.termsQuery("cwes", queryDTO.getCwes()));
+	            queryBuilder.should(QueryBuilders.termsQuery("cwesWithAncestors", queryDTO.getCwes()));
+	            queryBuilder.minimumShouldMatch(1);
+
+		        System.out.println("DENTRO DEL IF --------------------- CWES: " + queryDTO.getCwes());
+		        System.out.println("DENTRO DEL IF --------------------- QUERY: " + queryBuilder);
 	        }
 	        if (queryDTO.getVendors() != null && !queryDTO.getVendors().isEmpty()) {
 	            List<String> vendorKeys = queryDTO.getVendors().stream().map(vendor -> vendor + "/*")
@@ -63,6 +71,7 @@ public class QueryService {
 	        }
 	        SearchRequest searchRequest = new SearchRequest("cve_index");
 	        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+	        System.out.println("ANTES DE EJECUTAR CONSULTA  ---------------------  " + queryBuilder);
 	        searchSourceBuilder.query(queryBuilder);
 	        searchRequest.source(searchSourceBuilder);
 	        SearchResponse searchResponse = null;
@@ -72,14 +81,17 @@ public class QueryService {
 	            logger.error("[ERROR] No se ha podido hacer la búsqueda: ", e);
 	            e.printStackTrace();
 	        }
+	        System.out.println("RESPUESTA  --------------------- : " + searchResponse);
 	        SearchHits hits = searchResponse.getHits();
+	        System.out.println("HITS  --------------------- : " + hits);
+
 	        logger.info("Número total de resultados: {}", hits.getTotalHits().value);
 	        queryResultsDTO.setResultCount(hits.getTotalHits().value);
 	        if (hits.getTotalHits().value > 0) {
 	            queryResultsDTO.setMaxScore(hits.getMaxScore());
 	            List<ResultPair> results = new ArrayList<>();
 	            for (SearchHit hit : hits) {
-	            	System.out.println(hit);
+	            	System.out.println(hit.getScore());
 	                ResultPair resultPair = new ResultPair(hit.getId(), hit.getScore());
 	                results.add(resultPair);
 	            }
@@ -90,5 +102,22 @@ public class QueryService {
 	    }
 	    return queryResultsDTO;
 	}
+
+	public List<String> getCwes() throws IOException {
+        SearchRequest searchRequest = new SearchRequest("cve_index");
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.aggregation(AggregationBuilders.terms("cwes").field("cwes"));
+        searchRequest.source(searchSourceBuilder);
+
+        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        Terms terms = searchResponse.getAggregations().get("cwes");
+
+        List<String> cwes = new ArrayList<>();
+        for (Terms.Bucket bucket : terms.getBuckets()) {
+            cwes.add(bucket.getKeyAsString());
+        }
+        return cwes;
+    }
+
 
 }

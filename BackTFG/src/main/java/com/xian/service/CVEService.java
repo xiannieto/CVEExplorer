@@ -25,6 +25,8 @@ import com.xian.model.CVE.Configuration;
 import com.xian.model.CVE.Reference;
 import com.xian.repository.CVERepository;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 public class CVEService {
 
@@ -39,91 +41,70 @@ public class CVEService {
 	@Value("${cve.json.path}")
 	Resource resourceFile;
 
-	@Value("file:/C:/proyectos/TFG/xian/cve-resources/nvdcve-1.1-2022.json")
+	@Value("file:C:/Users/xian.jimenez/Documents/GitHub/TFG/BackTFG/cve-resources/nvdcve-1.1-2022.json")
 	Resource resourceFile2022;
 
-	@Value("file:/C:/proyectos/TFG/xian/cve-resources/nvdcve-1.1-2023.json")
+	@Value("file:../../../../cve-resources/nvdcve-1.1-2023.json")
 	Resource resourceFile2023;
 
-//	public void loadFromJSON(String cveJSONPath) {
-//		try {
-//			File file = new File(cveJSONPath);
-//			ObjectMapper mapper = new ObjectMapper();
-//			JsonNode root = mapper.readTree(file);
-//			if (cveJSONPath.equals("2")) {
-//				root = mapper.readTree(resourceFile2022.getInputStream());
-//			} else {
-//				root = mapper.readTree(resourceFile2023.getInputStream());
-//			}
-//
-//			ArrayNode cveItems = (ArrayNode) root.get("CVE_Items");
-//
-//			for (JsonNode entry : cveItems) {
-//				JsonNode cveElement = entry.get("cve");
-//				CVE cve = loadCVE(cveElement);
-//
-//				JsonNode configurationsElement = entry.get("configurations");
-//				List<CVE.Configuration> configurations = loadConfigurations(configurationsElement);
-//				cve.setConfigurations(configurations);
-//
-//				// Copy to cpeList
-//				for (CVE.Configuration configuration : configurations) {
-//					cve.getCpes().add(configuration.cpe23);
-//				}
-//				cve.setVendorProductPairs(extractVendorProductPairs(configurations));
-//
-//				JsonNode impactElement = entry.get("impact");
-//				cve.setImpact(loadImpact(impactElement));
-//
-//				cveRepository.save(cve);
-//			}
-//		} catch (IOException ex) {
-//			logger.error("[ERROR] Error loading CVEs from " + cveJSONPath, ex);
-//		}
-//	}
-	
-	public void loadFromJSON(String resourceFile2022) {
-	    try {
+	@PostConstruct
+	public void initialize() {
+		System.out.println("Cargando CVEs... ");
+		loadFromJSON(resourceFile2022);
+	}
+
+	public void loadFromJSON(Resource resourceFile) {
+		try {
 //	        File file = new File(resourceFile2022);
 //	        JsonNode root = readJsonFile(file);
-			File file = new File(resourceFile2022);
+			File file = resourceFile.getFile();
 			JsonNode root = readJsonFile(file);
-	        processJsonElements(root);
-	    } catch (IOException ex) {
-	        logger.error("[ERROR] Error loading CVEs from " + resourceFile2022, ex);
-	    }
+			processJsonElements(root);
+		} catch (IOException ex) {
+			logger.error("[ERROR] Error loading CVEs from " + resourceFile2022, ex);
+		}
 	}
 
 	private JsonNode readJsonFile(File file) throws IOException {
-	    ObjectMapper mapper = new ObjectMapper();
-	    return mapper.readTree(file);
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readTree(file);
 	}
 
 	private void processJsonElements(JsonNode root) {
-	    ArrayNode cveItems = (ArrayNode) root.get("CVE_Items");
+		Integer cveCount = 0;
+		Optional<CVE> cveCheck = Optional.of(new CVE());
+		ArrayNode cveItems = (ArrayNode) root.get("CVE_Items");
+		List<CVE> cvesToSave = new ArrayList<>();
+		for (JsonNode entry : cveItems) {
+			JsonNode cveElement = entry.get("cve");
+			CVE cve = loadCVE(cveElement);
+			cveCheck = cveRepository.findById(cve.getCveID());
+			if (cveCheck != null && cveCheck.isEmpty()) {
+				JsonNode configurationsElement = entry.get("configurations");
+				List<CVE.Configuration> configurations = loadConfigurations(configurationsElement);
+				cve.setConfigurations(configurations);
 
-	    for (JsonNode entry : cveItems) {
-	        JsonNode cveElement = entry.get("cve");
-	        CVE cve = loadCVE(cveElement);
-
-	        JsonNode configurationsElement = entry.get("configurations");
-	        List<CVE.Configuration> configurations = loadConfigurations(configurationsElement);
-	        cve.setConfigurations(configurations);
-
-	        // Copy to cpeList
-	        for (CVE.Configuration configuration : configurations) {
-	            cve.getCpes().add(configuration.cpe23);
-	        }
-	        cve.setVendorProductPairs(extractVendorProductPairs(configurations));
-
-	        JsonNode impactElement = entry.get("impact");
-	        cve.setImpact(loadImpact(impactElement));
-
-	        cveRepository.save(cve);
-	    }
+				for (CVE.Configuration configuration : configurations) {
+					cve.getCpes().add(configuration.cpe23);
+				}
+				cve.setVendorProductPairs(extractVendorProductPairs(configurations));
+				JsonNode impactElement = entry.get("impact");
+				cve.setImpact(loadImpact(impactElement));
+				try {
+					cvesToSave.add(cve);
+					cveCount++;
+				} catch (IllegalArgumentException e) {
+					logger.error("[ERROR] El ID del CVE es null. ", e);
+				} catch (Exception e) {
+					logger.error("[ERROR] No se ha podido guardar el CVE. ", e);
+				}
+			}
+		}
+		if (!cvesToSave.isEmpty()) {
+			cveRepository.saveAll(cvesToSave);
+		}
+		System.out.println("Cargados " + cveCount + " CVEs.");
 	}
-	
-	
 
 	private List<String> extractVendorProductPairs(List<Configuration> configurations) {
 		Set<String> result = new HashSet<>();
@@ -141,7 +122,6 @@ public class CVEService {
 		String assigner = cveElement.at("/CVE_data_meta/ASSIGNER").asText();
 		String description = cveElement.at("/description/description_data").get(0).get("value").asText();
 		CVE result = new CVE(id, assigner, description);
-
 		JsonNode referencesJson = cveElement.at("/references/reference_data");
 		if (referencesJson.isArray()) {
 			result.setReferences(loadReferences((ArrayNode) referencesJson));
@@ -252,22 +232,20 @@ public class CVEService {
 		return impact;
 	}
 
-	public List<CVE> getAllCVE() {
-		Iterable<CVE> list = new ArrayList<>();
-		List<CVE> result = new ArrayList<CVE>();
-		try {
-			list = cveRepository.findAll();
-			if (list == null) {
-				logger.info("[INFO] No hay ningun CVE actualmente. ");
-				return result;
-			}
-			result = StreamSupport.stream(list.spliterator(), false).collect(Collectors.toList());
-
-		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido recuperar los CVE: ", e);
-			throw e;
-		}
-		return result;
+	public List<CVE> getAllCVE(){
+	    List <CVE> result = null;
+	    try {
+	        result  = StreamSupport.stream(cveRepository.findAll().spliterator(), false)
+	                .collect(Collectors.toList());
+	    }
+	    catch (IllegalArgumentException e) {
+	        System.err.println("Error al recuperar los datos: " + e.getMessage());
+	        throw new IllegalArgumentException("Error al recuperar los datos", e);
+	    }
+	    catch (Exception e) {
+	        System.err.println("Error inesperado: " + e.getMessage());
+	    }
+	    return result;
 	}
 
 	public CVE getCVEById(String id) {

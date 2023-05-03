@@ -8,23 +8,30 @@
 	    <label for="assigner">Asignado por</label>
 	    <input type="text" class="form-control" id="assigner" [(ngModel)]="queryDTO.assigner" name="assigner">
 	  </div>
-	  <div class="form-group">
-	    <label for="cwes">CWEs</label>
-	    <input type="text" class="form-control" id="cwes" [(ngModel)]="queryDTO.cwes" name="cwes">
-	  </div>
-	  <div class="form-group">
-	    <label for="vendors">Vendors</label>
-	    <input type="text" class="form-control" id="vendors" [(ngModel)]="queryDTO.vendors" name="vendors">
-	  </div>
-	  <div class="form-group">
-	    <label for="vendorProductPairs">Pares Vendor/Product</label>
-	    <input type="text" class="form-control" id="vendorProductPairs" [(ngModel)]="queryDTO.vendorProductPairs" name="vendorProductPairs">
-	  </div>
-	  <div class="form-group">
-	    <label for="attackVectors">Vectores de Ataque</label>
-	    <input type="text" class="form-control" id="attackVectors" [(ngModel)]="queryDTO.attackVectors" name="attackVectors">
-	  </div>
-	  <!-- Agregar más campos para otros criterios de búsqueda -->
+    <div class="form-group">
+      <label for="cwes">CWEs</label>
+      <select class="form-control" id="cwes" [(ngModel)]="queryDTO.cwes" name="cwes" multiple>
+        <option *ngFor="let cwe of cwes" [value]="cwe">{{cwe}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="vendors">Vendors</label>
+      <select class="form-control" id="vendors" [(ngModel)]="queryDTO.vendors" name="vendors" multiple>
+        <option *ngFor="let vendor of vendors" [value]="vendor">{{vendor}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="vendorProductPairs">Pares Vendor/Product</label>
+      <select class="form-control" id="vendorProductPairs" [(ngModel)]="queryDTO.vendorProductPairs" name="vendorProductPairs" multiple>
+        <option *ngFor="let vendorProductPair of vendorProductPairs" [value]="vendorProductPair">{{vendorProductPair}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="attackVectors">Vectores de Ataque</label>
+      <select class="form-control" id="attackVectors" [(ngModel)]="queryDTO.attackVectors" name="attackVectors" multiple>
+        <option *ngFor="let attackVector of attackVectors" [value]="attackVector">{{attackVector}}</option>
+      </select>
+    </div>
 	  <button type="submit" class="btn btn-primary">Search</button>
 	  <button type="button" class="btn btn-secondary" (click)="onReset()">Reset</button>
 	</form>

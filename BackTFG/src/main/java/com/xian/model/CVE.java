@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Document(indexName = "cve_index")
 public class CVE {
@@ -16,7 +18,11 @@ public class CVE {
 	private String cveID;
 	private String assigner;
 	private String description;
+	
+	@Field(type = FieldType.Keyword)
 	private List<String> cwes = new ArrayList<>();
+	
+	@Field(type = FieldType.Keyword)
 	private List<String> cwesWithAncestors = new ArrayList<>(); // Para indexar jerarquía en ElasticSearch
 	private List<String> cpes = new ArrayList<>(); // Igual sobra
 	private List<String> vendorProductPairs = new ArrayList<>(); // Para indexar productos afectados en ElasticSearch
