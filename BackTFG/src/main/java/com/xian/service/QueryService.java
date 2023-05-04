@@ -49,14 +49,10 @@ public class QueryService {
 	            queryBuilder.must(QueryBuilders.matchQuery("assigner", queryDTO.getAssigner()));
 	        }
 	        if (queryDTO.getCwes() != null && !queryDTO.getCwes().isEmpty()) {
-		        System.out.println("ANTES DE CWES --------------------- DTO: " + queryDTO);
 
 	            queryBuilder.should(QueryBuilders.termsQuery("cwes", queryDTO.getCwes()));
 	            queryBuilder.should(QueryBuilders.termsQuery("cwesWithAncestors", queryDTO.getCwes()));
 	            queryBuilder.minimumShouldMatch(1);
-
-		        System.out.println("DENTRO DEL IF --------------------- CWES: " + queryDTO.getCwes());
-		        System.out.println("DENTRO DEL IF --------------------- QUERY: " + queryBuilder);
 	        }
 	        if (queryDTO.getVendors() != null && !queryDTO.getVendors().isEmpty()) {
 	            List<String> vendorKeys = queryDTO.getVendors().stream().map(vendor -> vendor + "/*")
@@ -81,9 +77,7 @@ public class QueryService {
 	            logger.error("[ERROR] No se ha podido hacer la búsqueda: ", e);
 	            e.printStackTrace();
 	        }
-	        System.out.println("RESPUESTA  --------------------- : " + searchResponse);
 	        SearchHits hits = searchResponse.getHits();
-	        System.out.println("HITS  --------------------- : " + hits);
 
 	        logger.info("Número total de resultados: {}", hits.getTotalHits().value);
 	        queryResultsDTO.setResultCount(hits.getTotalHits().value);

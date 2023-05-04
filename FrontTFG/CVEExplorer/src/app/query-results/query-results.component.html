@@ -3,8 +3,8 @@
   <ul class="responsive-table">
     <li class="table-header">
       <div class="col col-1">CVE ID</div>
-      <div class="col col-2">Score<br><span style="font-weight: normal;">Max score: {{ queryResults.maxScore }}</span></div>
-      <div class ="col col-3">Result count: {{ queryResults.resultCount }}</div>
+      <div class="col col-2">Puntuación<br><span style="font-weight: normal;">Puntuación Máxima: {{ queryResults.maxScore }}</span></div>
+      <div class ="col col-3">Número de resultados: {{ queryResults.resultCount }}</div>
     </li>
     <li class="table-row" *ngFor="let result of queryResults.results">
       <div class="col col-1" data-label="CVE ID"><a [routerLink]="['/cve', result.cveID]">{{ result.cveID }}</a></div>

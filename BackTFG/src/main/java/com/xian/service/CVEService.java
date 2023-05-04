@@ -11,6 +11,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.core.CountRequest;
+import org.elasticsearch.client.core.CountResponse;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -28,6 +39,7 @@ import com.xian.repository.CVERepository;
 
 import jakarta.annotation.PostConstruct;
 
+@SuppressWarnings("deprecation")
 @Service
 public class CVEService {
 
@@ -38,6 +50,12 @@ public class CVEService {
 
 	@Autowired
 	CWEService cweService;
+	
+	@Autowired
+	private RestHighLevelClient client;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Value("${cve.json.path}")
 	Resource resourceFile;
@@ -95,7 +113,7 @@ public class CVEService {
 					cvesToSave.add(cve);
 					cveCount++;
 				} catch (IllegalArgumentException e) {
-					logger.error("[ERROR] El ID del CVE es null. ", e);
+					logger.error("[ERROR] El ID del CVE es nulo. ", e);
 				} catch (Exception e) {
 					logger.error("[ERROR] No se ha podido guardar el CVE. ", e);
 				}
@@ -233,25 +251,45 @@ public class CVEService {
 		return impact;
 	}
 
-	public List<CVE> getAllCVE() {
-	    Iterable<CVE> list = new ArrayList<>();
-	    List<CVE> result = new ArrayList<CVE>();
+	public List<CVE> getAllCVEs(int pageNumber, int pageSize) {
+	    SearchRequest searchRequest = new SearchRequest("cve_index");
+	    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+	    searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+	    searchSourceBuilder.from(pageNumber * pageSize).size(pageSize);
+	    searchRequest.source(searchSourceBuilder);
+	    SearchResponse searchResponse = null;
 	    try {
-	        logger.info("[DEBUG] Llamando a cveRepository.findAll()");
-	        list = cveRepository.findAll();
-	        logger.info("[DEBUG] cveRepository.findAll() devolvió {} elementos", ((Collection<?>) list).size());
-	        if (list == null) {
-	            logger.info("[INFO] No hay ningun CVE actualmente. ");
-	            return result;
-	        }
-	        System.out.println(list);
-	        result = StreamSupport.stream(list.spliterator(), false).collect(Collectors.toList());
-
-	    } catch (Exception e) {
-	        logger.error("[ERROR] No se ha podido recuperar los CVE: ", e);
-	        throw e;
+	        searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+	    } catch (IOException e) {
+	        logger.error("[ERROR] No se ha podido hacer la búsqueda: ", e);
+	        e.printStackTrace();
 	    }
-	    return result;
+	    SearchHits hits = searchResponse.getHits();
+	    List<CVE> cves = new ArrayList<>();
+	    for (SearchHit hit : hits) {
+	        CVE cve = null;
+	        try {
+	            cve = objectMapper.readValue(hit.getSourceAsString(), CVE.class);
+	        } catch (JsonProcessingException e) {
+	             logger.error("Error al convertir JSON en objeto CVE: ", e);
+	            e.printStackTrace();
+	        }
+	        cves.add(cve);
+	    }
+	    return cves;
+	}
+
+	public long countAllCVEs() {
+	    CountRequest countRequest = new CountRequest("cve_index");
+	    countRequest.query(QueryBuilders.matchAllQuery());
+	    CountResponse countResponse = null;
+	    try {
+	        countResponse = client.count(countRequest, RequestOptions.DEFAULT);
+	    } catch (IOException e) {
+	        logger.error("[ERROR] No se ha podido hacer la búsqueda: ", e);
+	        e.printStackTrace();
+	    }
+	    return countResponse.getCount();
 	}
 
 	public CVE getCVEById(String id) {
@@ -265,16 +303,6 @@ public class CVEService {
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido recuperar los CVE: ", e);
 			return null;
-		}
-	}
-
-	public void saveCVE(CVE c) {
-		try {
-			cveRepository.save(c);
-			logger.info("[INFO] Se ha guardado el CVE:{} ", c);
-
-		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido guardar el CVE:{} ", c, e);
 		}
 	}
 
