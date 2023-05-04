@@ -1,6 +1,8 @@
 package com.xian.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -77,12 +80,15 @@ public class CWEController {
 		return ResponseEntity.ok(ancestors);
 	}
 
-	@GetMapping("/roots")
+	@GetMapping("/roots/")
 	@ResponseBody
-	public ResponseEntity<List<CWE>> findRoots() {
+	public ResponseEntity<Object> findRoots(@RequestParam(defaultValue = "0") int pageNumber,
+			@RequestParam(defaultValue = "10") int pageSize) {
 		List<CWE> roots = null;
+		long totalResults = 0;
 		try {
-			roots = cweService.findRoots();
+			roots = cweService.findRoots(pageNumber, pageSize);
+			totalResults = cweService.countAllCVEs();
 			logger.info("[INFO] Cargada lista de CWEs raíz (roots).");
 		} catch (Exception e) {
 			logger.error("[ERROR] No se ha podido obtener la lista de CWEs raíz: ", e);
@@ -91,8 +97,10 @@ public class CWEController {
 		if (roots == null || roots.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
-
-		return ResponseEntity.ok(roots);
+		Map<String, Object> response = new HashMap<>();
+		response.put("cwes", roots);
+		response.put("totalResults", totalResults);
+		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/{id}/getChildren")

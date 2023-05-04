@@ -3,13 +3,10 @@ package com.xian.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -38,7 +35,6 @@ import com.xian.model.CVE.Reference;
 import com.xian.repository.CVERepository;
 
 import jakarta.annotation.PostConstruct;
-
 @SuppressWarnings("deprecation")
 @Service
 public class CVEService {
@@ -50,7 +46,7 @@ public class CVEService {
 
 	@Autowired
 	CWEService cweService;
-	
+
 	@Autowired
 	private RestHighLevelClient client;
 	
@@ -278,6 +274,24 @@ public class CVEService {
 	    }
 	    return cves;
 	}
+	
+//	public List<CVE> getAllCVEs(int pageNumber, int pageSize) {
+//	    SearchRequest searchRequest = SearchRequest.builder()
+//	            .index("cve_index")
+//	            .query(q -> q.matchAll(m -> m))
+//	            .from(pageNumber * pageSize)
+//	            .size(pageSize)
+//	            .build();
+//	    SearchResponse searchResponse = client.search(searchRequest);
+//	    List<CVE> cves = new ArrayList<>();
+//	    for (SearchHit hit : searchResponse.hits().hits()) {
+//	        CVE cve = JacksonJsonpMapper.builder()
+//	                .build()
+//	                .readValue(hit.source().toString(), CVE.class);
+//	        cves.add(cve);
+//	    }
+//	    return cves;
+//	}
 
 	public long countAllCVEs() {
 	    CountRequest countRequest = new CountRequest("cve_index");

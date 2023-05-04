@@ -362,12 +362,27 @@ public class CWEService {
 
 		return result;
 	}
-
+	
 	public List<CWE> findRoots() {
 		if (this.roots == null) {
 			this.roots = this.extractRoots();
 		}
 		return this.roots;
+	}
+
+	public List<CWE> findRoots(int pageNumber, int pageSize) {
+		int startIndex = pageNumber * pageSize;
+	    int endIndex = startIndex + pageSize;
+		if (this.roots == null) {
+			this.roots = this.extractRoots(pageNumber, pageSize);
+		}
+		if (this.roots.size() > endIndex) {
+	        return this.roots.subList(startIndex, endIndex);
+	    } else if (this.roots.size() > startIndex) {
+	        return this.roots.subList(startIndex, this.roots.size());
+	    } else {
+	        return new ArrayList<>();
+	    }
 	}
 
 	private List<CWE> extractRoots() {
@@ -384,6 +399,31 @@ public class CWEService {
 			}
 		}
 		return result;
+	}
+	
+	private List<CWE> extractRoots(int pageNumber, int pageSize) {
+	    List<CWE> result = new ArrayList<>();
+	    int startIndex = pageNumber * pageSize;
+	    int endIndex = startIndex + pageSize;
+
+	    for (CWE cwe : this.cwes.values()) {
+	        Set<String> parents = cwe.getParents();
+	        if ((parents == null) || parents.isEmpty()) {
+	            if (!cwe.getName().startsWith("DEPRECATED")) {
+	                result.add(cwe);
+	            }
+	        } else {
+	            result.add(cwe);
+	        }
+	    }
+
+	    if (result.size() > endIndex) {
+	        return result.subList(startIndex, endIndex);
+	    } else if (result.size() > startIndex) {
+	        return result.subList(startIndex, result.size());
+	    } else {
+	        return new ArrayList<>();
+	    }
 	}
 
 	public List<String> getAncestorIDs(String cweId) {
@@ -411,6 +451,10 @@ public class CWEService {
 		} else {
 			return Collections.emptyList();
 		}
+	}
+
+	public long countAllCVEs() {
+		return cwes.size();
 	}
 	
 }

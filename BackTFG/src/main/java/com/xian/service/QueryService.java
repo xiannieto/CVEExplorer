@@ -38,7 +38,6 @@ public class QueryService {
 	private RestHighLevelClient client;
 
 	public QueryResultsDTO searchCVEs(QueryDTO queryDTO) {
-		logger.info("Ejecutando consulta: {}", queryDTO);
 	    QueryResultsDTO queryResultsDTO = new QueryResultsDTO();
 	    try {
 	        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
@@ -79,13 +78,11 @@ public class QueryService {
 	        }
 	        SearchHits hits = searchResponse.getHits();
 
-	        logger.info("Número total de resultados: {}", hits.getTotalHits().value);
 	        queryResultsDTO.setResultCount(hits.getTotalHits().value);
 	        if (hits.getTotalHits().value > 0) {
 	            queryResultsDTO.setMaxScore(hits.getMaxScore());
 	            List<ResultPair> results = new ArrayList<>();
 	            for (SearchHit hit : hits) {
-	            	System.out.println(hit.getScore());
 	                ResultPair resultPair = new ResultPair(hit.getId(), hit.getScore());
 	                results.add(resultPair);
 	            }

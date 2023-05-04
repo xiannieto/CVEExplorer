@@ -3,6 +3,11 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, of, tap, throwError } from 'rxjs';
 import { CWE } from '../models/cwe.model';
 
+interface CweListResponse {
+  cwes: CWE[];
+  totalResults: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -29,8 +34,9 @@ export class CweService {
     );
   }
 
-  findRoots(): Observable<CWE[]> {
-    return this.http.get<CWE[]>(`${this.cweUrl}/roots`)
+  findRoots(pageNumber: number = 0, pageSize: number = 10): Observable<CweListResponse> {
+    return this.http
+    .get<CweListResponse>(`${this.cweUrl}/roots/?pageNumber=${pageNumber}&pageSize=${pageSize}`)
     .pipe(catchError(this.handleError));
   }
 
