@@ -3,23 +3,33 @@
   <h2>Lista de CWEs</h2>
   <ul class="responsive-table">
     <li class="table-pages-box">
-      <button class="button-29" role="button" (click)="previousPage()">Página Anterior</button>
+      <button class="button-29" role="button" (click)="previousPage()">
+        Página Anterior
+      </button>
       <span>{{ pageNumber + 1 }} - {{ totalPages }}</span>
-      <button class="button-29" role="button"(click)="nextPage()">Siguiente Página</button>
+      <button class="button-29" role="button" (click)="nextPage()">
+        Siguiente Página
+      </button>
     </li>
     <li class="table-query-results">
-      <p>Mostrando CVE: {{ pageNumber * pageSize + 1 }} al CVE: {{ Math.min((pageNumber + 1) * pageSize, totalPages * pageSize) }} ...</p>
+      <p>
+        Mostrando CVE: {{ pageNumber * pageSize + 1 }} al CVE:
+        {{ Math.min((pageNumber + 1) * pageSize, totalPages * pageSize) }} ...
+      </p>
     </li>
-
     <li class="table-header">
       <div class="col col-1">ID</div>
       <div class="col col-2">Nombre</div>
       <div class="col col-3">Descripción</div>
     </li>
     <li class="table-row" *ngFor="let cwe of cwes">
-      <div class="col col-1" data-label="ID"><a [routerLink]="['/cwe', cwe.cweID]">{{ cwe.cweID }}</a></div>
+      <div class="col col-1" data-label="ID">
+        <a [routerLink]="['/cwe', cwe.cweID]">{{ cwe.cweID }}</a>
+      </div>
       <div class="col col-2" data-label="Nombre">{{ cwe.name }}</div>
-      <div class="col col-3" data-label="Descripción">{{ cwe?.description }}</div>
+      <div class="col col-3" data-label="Descripción">
+        {{ cwe?.description }}
+      </div>
     </li>
   </ul>
 </div>

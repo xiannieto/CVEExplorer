@@ -25,6 +25,10 @@ export class QueryFormComponent implements OnInit {
   }
 
   onSubmit() {
+    if (typeof this.queryDTO.cwes === 'string') {
+      this.queryDTO.cwes = [this.queryDTO.cwes];
+    }
+
     this.queryService.search(this.queryDTO).subscribe((data: QueryResultsDTO) => {
       this.queryResultsDTO = data;
     });

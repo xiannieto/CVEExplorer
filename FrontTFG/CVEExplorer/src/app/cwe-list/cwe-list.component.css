@@ -1,5 +1,5 @@
 body {
-  font-family: 'lato', sans-serif;
+  font-family: "lato", sans-serif;
 }
 .container {
   max-width: 1000px;
@@ -28,15 +28,20 @@ h2 {
 .button-29 {
   align-items: center;
   appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+  background-image: radial-gradient(
+    100% 100% at 100% 0,
+    #5adaff 0,
+    #5468ff 100%
+  );
   border: 0;
   border-radius: 6px;
-  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px,rgba(45, 35, 66, .3) 0 7px 13px -3px,rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, rgba(58, 65, 111, 0.5) 0 -3px 0 inset;
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
   display: inline-flex;
-  font-family: "JetBrains Mono",monospace;
+  font-family: "JetBrains Mono", monospace;
   height: 28px;
   justify-content: center;
   line-height: 1;
@@ -47,21 +52,23 @@ h2 {
   position: relative;
   text-align: left;
   text-decoration: none;
-  transition: box-shadow .15s,transform .15s;
+  transition: box-shadow 0.15s, transform 0.15s;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
   white-space: nowrap;
-  will-change: box-shadow,transform;
+  will-change: box-shadow, transform;
   font-size: 14px;
 }
 
 .button-29:focus {
-  box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
 }
 
 .button-29:hover {
-  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
   transform: translateY(-2px);
 }
 
@@ -70,62 +77,66 @@ h2 {
   transform: translateY(2px);
 }
 
-.responsive-table .table-showing-results {
-  margin-bottom: 6px !important;
+.responsive-table .table-query-results {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1px 15px;
 }
 
-.responsive-table .table-showing-results p {
-  text-align: right !important;
+.responsive-table .table-query-results p {
+  font-weight: italic;
 }
-
-.responsive-table li {
-    border-radius: 3px;
-    padding: 25px 30px;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-}
-
 
 .responsive-table .table-header {
-    background-color: #95A5A6;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    font-weight: bold;
+  border-radius: 3px;
+  padding: 25px 30px;
+  background-color: #95a5a6;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: bold;
+}
 
-}
 .responsive-table .table-row {
-    background-color: #ffffff;
-    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.2);
+  border-radius: 3px;
+  padding: 25px 30px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.2);
 }
+
 .responsive-table .col-1 {
-    flex-basis: 20%;
+  flex-basis: 20%;
 }
 .responsive-table .col-2 {
-    flex-basis: 20%;
+  flex-basis: 20%;
 }
 .responsive-table .col-3 {
-    flex-basis: 60%;
+  flex-basis: 60%;
 }
-
 @media all and (max-width: 767px) {
   .responsive-table .table-header {
-      display: none;
+    display: none;
   }
   .responsive-table li {
-      display: block;
+    display: block;
   }
   .responsive-table .col {
-      flex-basis: 100%;
-      display: flex;
-      padding: 10px 0;
+    flex-basis: 100%;
+    display: flex;
+    padding: 10px 0;
   }
   .responsive-table .col:before {
-      color: #6C7A89;
-      padding-right: 10px;
-      content: attr(data-label);
-      flex-basis: 50%;
-      text-align:right
+    color: #6c7a89;
+    padding-right: 10px;
+    content: attr(data-label);
+    flex-basis: 50%;
+    text-align: right;
   }
 }

@@ -10,7 +10,8 @@
 	  </div>
     <div class="form-group">
       <label for="cwes">CWEs</label>
-      <select class="form-control" id="cwes" [(ngModel)]="queryDTO.cwes" name="cwes" multiple>
+      <select class="form-control" id="cwes" [(ngModel)]="queryDTO.cwes" name="cwes">
+        <option selected disabled>Seleccione una opción...</option>
         <option *ngFor="let cwe of cwes" [value]="cwe">{{cwe}}</option>
       </select>
     </div>
