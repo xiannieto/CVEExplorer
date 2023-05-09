@@ -1,14 +1,33 @@
 <div *ngIf="queryResults">
   <h2>Resultados de la consulta</h2>
+  <div class="query-results">
+    Número de resultados: {{ queryResults.resultCount }}
+  </div>
   <ul class="responsive-table">
     <li class="table-header">
       <div class="col col-1">CVE ID</div>
-      <div class="col col-2">Puntuación<br><span style="font-weight: normal;">Puntuación Máxima: {{ queryResults.maxScore }}</span></div>
-      <div class ="col col-3">Número de resultados: {{ queryResults.resultCount }}</div>
+      <div class="col col-2">Assigner</div>
+      <div class="col col-3">CWE</div>
+      <div class="col col-4">
+        Puntuación<br /><span style="font-weight: normal"
+          >Puntuación Máxima: {{ queryResults.maxScore }}</span
+        >
+      </div>
     </li>
-    <li class="table-row" *ngFor="let result of queryResults.results">
-      <div class="col col-1" data-label="CVE ID"><a [routerLink]="['/cve', result.cveID]">{{ result.cveID }}</a></div>
-      <div class="col col-2" data-label="Score">{{ result.score }}</div>
+    <li
+      class="table-row"
+      *ngFor="let result of queryResults.results; let i = index"
+    >
+      <div class="col col-1" data-label="CVE ID">
+        <a [routerLink]="['/cve', result.cveID]">{{ result.cveID }}</a>
+      </div>
+      <div class="col col-2" data-label="Assigner">
+        {{ (cveDetails[i] | async)?.assigner }}
+      </div>
+      <div class="col col-3" data-label="CWE">
+        {{ (cveDetails[i] | async)?.cwes }}
+      </div>
+      <div class="col col-4" data-label="Score">{{ result.score }}</div>
     </li>
   </ul>
 </div>

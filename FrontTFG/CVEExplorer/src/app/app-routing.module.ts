@@ -13,11 +13,11 @@ const routes: Routes = [
   { path: 'cwes', component: CweListComponent },
   { path: 'query', component: QueryFormComponent },
   { path: 'cve/:id', component: CveDetailsComponent },
-  { path: 'cwe/:id', component: CweDetailsComponent }
+  { path: 'cwe/:id', component: CweDetailsComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

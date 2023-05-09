@@ -13,11 +13,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,6 +22,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -35,7 +32,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.xian.model.CWE;
-import com.xian.repository.CWERepository;
 
 import jakarta.annotation.PostConstruct;
 
@@ -49,8 +45,6 @@ public class CWEService {
 
 	private List<CWE> roots;
 
-	public CWERepository cweRepository;
-
 	@Value("${cwe.xml.path}")
 	private String cweXMLPath;
 
@@ -60,116 +54,6 @@ public class CWEService {
 		loadFromXML(cweXMLPath);
 	}
 
-//	public void loadFromJSON(String jsonPath) {
-//		try {
-//			cwes.clear();
-//			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loading CWEs from " + jsonPath);
-//
-//			// Load the JSON file as a string
-//			String jsonStr = new String(Files.readAllBytes(Paths.get(jsonPath)));
-//
-//			// Parse JSON string
-//			JSONParser parser = new JSONParser(jsonStr);
-//
-//			JSONObject json = null;
-//			try {
-//				Object obj = parser.parse();
-//				json = (JSONObject) obj;
-//			} catch (org.apache.tomcat.util.json.ParseException e) {
-//				Logger.getLogger(CWEService.class.getName()).log(Level.SEVERE, "Error parsing CWEs from " + jsonPath);
-//				e.printStackTrace();
-//			}
-//
-//			JSONArray weaknesses = json.getJSONObject("Weakness_Catalog").getJSONArray("Weaknesses");
-//
-//			// Extract relevant fields from each weakness
-//			for (Object weaknessObj : weaknesses) {
-//				JSONObject weakness = (JSONObject) weaknessObj;
-//
-//				String id = weakness.getString("ID");
-//				String name = weakness.getString("Name");
-//				String description = weakness.getString("Description");
-//				String extendedDescription = weakness.optString("Extended_Description");
-//
-//				CWE cwe = new CWE("CWE-" + id, name, description, extendedDescription);
-//
-//				JSONObject parents = weakness.optJSONObject("Related_Weaknesses");
-//				if (parents != null) {
-//					JSONArray childOfParents = parents.optJSONArray("ChildOf");
-//					if (childOfParents != null) {
-//						for (Object parentObj : childOfParents) {
-//							JSONObject parent = (JSONObject) parentObj;
-//							String parentCWE = parent.getString("CWE_ID");
-//							cwe.addParent(parentCWE);
-//						}
-//					}
-//				}
-//				cwes.put(cwe.getCweID(), cwe);
-//			}
-//
-//			attachChildren();
-//			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loaded " + cwes.size() + " CWEs.");
-//
-//			roots = extractRoots();
-//		} catch (
-//
-//		IOException ex) {
-//			Logger.getLogger(CWEService.class.getName()).log(Level.SEVERE, "Error reading CWEs from " + jsonPath, ex);
-//		} catch (JSONException ex) {
-//			Logger.getLogger(CWEService.class.getName()).log(Level.SEVERE, "Error parsing CWEs from " + jsonPath, ex);
-//		}
-//	}
-//	public void loadFromXML(String xmlPath) {
-//		try {
-//			this.cwes = new HashMap<>();
-//			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loading CWEs from " + xmlPath);
-//
-//			// FileSystemResource resource = new FileSystemResource(xmlPath);
-//			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-//			// Document document = builder.parse(resource.getInputStream());
-//			Document document = builder.parse(new FileInputStream(xmlPath));
-//
-//			XPath xPath = XPathFactory.newInstance().newXPath();
-//
-//			NodeList weaknesses = (NodeList) xPath.evaluate("/Weakness_Catalog/Weaknesses/Weakness", document,
-//					XPathConstants.NODESET);
-//			int weaknessItems = weaknesses.getLength();
-//			for (int i = 0; i < weaknessItems; i++) {
-//				Element weakness = (Element) weaknesses.item(i);
-//				// Optimizacion, evita carga lenta al final de la lista
-//				// (https://stackoverflow.com/questions/3782618/xpath-evaluate-performance-slows-down-absurdly-over-multiple-calls)
-//				weakness.getParentNode().removeChild(weakness);
-//
-//				String id = xPath.evaluate("@ID", weakness);
-//				String name = xPath.evaluate("@Name", weakness);
-//				String description = xPath.evaluate("Description", weakness);
-//				String extendedDescription = xPath.evaluate("Extended_Description", weakness);
-//
-//				CWE cwe = new CWE("CWE-" + id, name, description, extendedDescription);
-//
-//				NodeList parents = (NodeList) xPath.evaluate("Related_Weaknesses/Related_Weakness[@Nature='ChildOf']",
-//						weakness, XPathConstants.NODESET);
-//				if ((parents != null) && parents.getLength() > 0) {
-//					for (int k = 0; k < parents.getLength(); k++) {
-//						String parentCWE = xPath.evaluate("@CWE_ID", parents.item(k));
-//						cwe.addParent(parentCWE);
-//					}
-//				}
-//
-//				// TODO: extraer Language, Technology, Operating_System, Architecture de
-//				// <Applicable_Platforms>
-//				cwes.put(cwe.getCweID(), cwe);
-//			}
-//
-//			attachChildren();
-//			Logger.getLogger(CWEService.class.getName()).log(Level.INFO, "Loaded " + this.cwes.size() + " CWEs.");
-//
-//			this.roots = this.extractRoots();
-//		} catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException ex) {
-//			ex.printStackTrace();
-//			Logger.getLogger(CWEService.class.getName()).log(Level.SEVERE, "Error reading CWEs from " + xmlPath, ex);
-//		}
-//	}
 	
 	public void loadFromXML(String xmlPath) {
 		try {
@@ -266,22 +150,6 @@ public class CWEService {
 				}
 			}
 		}
-	}
-	
-	public List<CWE> getAllCWE(){
-	    List <CWE> result = null;
-	    try {
-	        result  = StreamSupport.stream(cweRepository.findAll().spliterator(), false)
-	                .collect(Collectors.toList());
-	    }
-	    catch (IllegalArgumentException e) {
-	        System.err.println("Error al recuperar los datos: " + e.getMessage());
-	        throw new IllegalArgumentException("Error al recuperar los datos", e);
-	    }
-	    catch (Exception e) {
-	        System.err.println("Error inesperado: " + e.getMessage());
-	    }
-	    return result;
 	}
 
 	public CWE findByCWEID(String cweID) {

@@ -16,17 +16,20 @@ public class CVE {
 
 	@Id
 	private String cveID;
+	
+	@Field(type = FieldType.Keyword)
 	private String assigner;
 	private String description;
 	
 	@Field(type = FieldType.Keyword)
 	private List<String> cwes = new ArrayList<>();
 	
-	@Field(type = FieldType.Keyword)
+	
 	private List<String> cwesWithAncestors = new ArrayList<>(); // Para indexar jerarquía en ElasticSearch
 	private List<String> cpes = new ArrayList<>(); // Igual sobra
+	
+	@Field(type = FieldType.Keyword)
 	private List<String> vendorProductPairs = new ArrayList<>(); // Para indexar productos afectados en ElasticSearch
-
 	private List<Configuration> configurations = new ArrayList<>();
 	private List<Reference> references = new ArrayList<>();
 	private CVSS3Impact impact;

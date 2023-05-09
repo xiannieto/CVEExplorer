@@ -5,7 +5,7 @@ import { QueryDTO } from '../models/queryDTO.model';
 import { QueryResultsDTO } from '../models/queryResultDTO.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class QueryService {
   private apiUrl = 'http://localhost:8080/api';
@@ -20,4 +20,19 @@ export class QueryService {
     return this.http.get<string[]>(`${this.apiUrl}/getQueryCwes`);
   }
 
+  getQueryAssigners(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/getQueryAssigners`);
+  }
+
+  getQueryAttackVectors(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/getQueryAttackVectors`);
+  }
+
+  getDescriptions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/getQueryDescriptions`);
+  }
+
+  getVendors(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/getQueryVendors`);
+  }
 }

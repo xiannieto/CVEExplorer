@@ -12,6 +12,9 @@ import { CweDetailsComponent } from './cwe-list/cwe-details/cwe-details.componen
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { ChipsModule } from 'primeng/chips';
 
 @NgModule({
   declarations: [
@@ -22,15 +25,18 @@ import { FormsModule } from '@angular/forms';
     QueryResultsComponent,
     CweListComponent,
     CweDetailsComponent,
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    AutoCompleteModule,
+    ChipsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

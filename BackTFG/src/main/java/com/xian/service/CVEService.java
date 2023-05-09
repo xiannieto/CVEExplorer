@@ -21,8 +21,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,8 +31,6 @@ import com.xian.model.CVE;
 import com.xian.model.CVE.Configuration;
 import com.xian.model.CVE.Reference;
 import com.xian.repository.CVERepository;
-
-import jakarta.annotation.PostConstruct;
 @SuppressWarnings("deprecation")
 @Service
 public class CVEService {
@@ -53,30 +49,20 @@ public class CVEService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Value("${cve.json.path}")
-	Resource resourceFile;
 
-	@Value("file:C:/Users/xian.jimenez/Documents/GitHub/TFG/BackTFG/cve-resources/nvdcve-1.1-2022.json")
-	Resource resourceFile2022;
+//	@PostConstruct
+//	public void initialize() {
+//		logger.info("[INFO] Cargando CVES desde: " + resourceFile2022);
+//		loadFromJSON(resourceFile2022);
+//	}
 
-	@Value("file:../../../../cve-resources/nvdcve-1.1-2023.json")
-	Resource resourceFile2023;
-
-	@PostConstruct
-	public void initialize() {
-		logger.info("[INFO] Cargando CVES desde: " + resourceFile2022);
-		loadFromJSON(resourceFile2022);
-	}
-
-	public void loadFromJSON(Resource resourceFile) {
+	public void loadFromJSON(String resourceFile) {
 		try {
-//	        File file = new File(resourceFile2022);
-//	        JsonNode root = readJsonFile(file);
-			File file = resourceFile.getFile();
+	        File file = new File(resourceFile);
 			JsonNode root = readJsonFile(file);
 			processJsonElements(root);
 		} catch (IOException ex) {
-			logger.error("[ERROR] Error loading CVEs from " + resourceFile2022, ex);
+			logger.error("[ERROR] Error loading CVEs from " + resourceFile, ex);
 		}
 	}
 

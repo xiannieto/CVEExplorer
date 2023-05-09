@@ -38,77 +38,135 @@ public class QueryService {
 	private RestHighLevelClient client;
 
 	public QueryResultsDTO searchCVEs(QueryDTO queryDTO) {
-	    QueryResultsDTO queryResultsDTO = new QueryResultsDTO();
-	    try {
-	        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-	        if (queryDTO.getDescription() != null && !queryDTO.getDescription().isEmpty()) {
-	            queryBuilder.must(QueryBuilders.matchQuery("description", queryDTO.getDescription()));
-	        }
-	        if (queryDTO.getAssigner() != null && !queryDTO.getAssigner().isEmpty()) {
-	            queryBuilder.must(QueryBuilders.matchQuery("assigner", queryDTO.getAssigner()));
-	        }
-	        if (queryDTO.getCwes() != null && !queryDTO.getCwes().isEmpty()) {
 
-	            queryBuilder.should(QueryBuilders.termsQuery("cwes", queryDTO.getCwes()));
-	            queryBuilder.should(QueryBuilders.termsQuery("cwesWithAncestors", queryDTO.getCwes()));
-	            queryBuilder.minimumShouldMatch(1);
-	        }
-	        if (queryDTO.getVendors() != null && !queryDTO.getVendors().isEmpty()) {
-	            List<String> vendorKeys = queryDTO.getVendors().stream().map(vendor -> vendor + "/*")
-	                    .collect(Collectors.toList());
-	            queryBuilder.must(QueryBuilders.termsQuery("vendorProductPairs", vendorKeys));
-	        }
-	        if (queryDTO.getVendorProductPairs() != null && !queryDTO.getVendorProductPairs().isEmpty()) {
-	            queryBuilder.must(QueryBuilders.termsQuery("vendorProductPairs", queryDTO.getVendorProductPairs()));
-	        }
-	        if (queryDTO.getAttackVectors() != null && !queryDTO.getAttackVectors().isEmpty()) {
-	            queryBuilder.must(QueryBuilders.termsQuery("impact.attackVector", queryDTO.getAttackVectors()));
-	        }
-	        SearchRequest searchRequest = new SearchRequest("cve_index");
-	        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-	        System.out.println("ANTES DE EJECUTAR CONSULTA  ---------------------  " + queryBuilder);
-	        searchSourceBuilder.query(queryBuilder);
-	        searchRequest.source(searchSourceBuilder);
-	        SearchResponse searchResponse = null;
-	        try {
-	            searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-	        } catch (IOException e) {
-	            logger.error("[ERROR] No se ha podido hacer la búsqueda: ", e);
-	            e.printStackTrace();
-	        }
-	        SearchHits hits = searchResponse.getHits();
+		QueryResultsDTO queryResultsDTO = new QueryResultsDTO();
+		try {
+			BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+			if (queryDTO.getDescription() != null && !queryDTO.getDescription().isEmpty()) {
+				queryBuilder.must(QueryBuilders.matchQuery("description", queryDTO.getDescription()));
+			}
+			if (queryDTO.getAssigner() != null && !queryDTO.getAssigner().isEmpty()) {
+				queryBuilder.must(QueryBuilders.termsQuery("assigner", queryDTO.getAssigner()));
+			}
+			if (queryDTO.getCwes() != null && !queryDTO.getCwes().isEmpty()) {
+				queryBuilder.should(QueryBuilders.termsQuery("cwes", queryDTO.getCwes()));
+				queryBuilder.should(QueryBuilders.termsQuery("cwesWithAncestors", queryDTO.getCwes()));
+				queryBuilder.minimumShouldMatch(1);
+			}
+			if (queryDTO.getVendors() != null && !queryDTO.getVendors().isEmpty()) {
+				List<String> vendorKeys = queryDTO.getVendors().stream().map(vendor -> vendor + "/*")
+						.collect(Collectors.toList());
+				queryBuilder.must(QueryBuilders.termsQuery("vendorProductPairs", vendorKeys));
+			}
+			if (queryDTO.getVendorProductPairs() != null && !queryDTO.getVendorProductPairs().isEmpty()) {
+				queryBuilder.must(QueryBuilders.termsQuery("vendorProductPairs", queryDTO.getVendorProductPairs()));
+			}
+			if (queryDTO.getAttackVectors() != null && !queryDTO.getAttackVectors().isEmpty()) {
+				queryBuilder.must(QueryBuilders.termsQuery("impact.attackVector.keyword", queryDTO.getAttackVectors()));
+			}
 
-	        queryResultsDTO.setResultCount(hits.getTotalHits().value);
-	        if (hits.getTotalHits().value > 0) {
-	            queryResultsDTO.setMaxScore(hits.getMaxScore());
-	            List<ResultPair> results = new ArrayList<>();
-	            for (SearchHit hit : hits) {
-	                ResultPair resultPair = new ResultPair(hit.getId(), hit.getScore());
-	                results.add(resultPair);
-	            }
-	            queryResultsDTO.setResults(results);
-	        }
-	    } catch (Exception e) {
-	        logger.error("[ERROR] Algo ha salido mal en la busqueda: ", e);
-	    }
-	    return queryResultsDTO;
+			SearchRequest searchRequest = new SearchRequest("cve_index");
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.query(queryBuilder);
+			searchRequest.source(searchSourceBuilder);
+			SearchResponse searchResponse = null;
+			try {
+				searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+			} catch (IOException e) {
+				logger.error("[ERROR] No se ha podido hacer la búsqueda: ", e);
+				e.printStackTrace();
+			}
+			SearchHits hits = searchResponse.getHits();
+			queryResultsDTO.setResultCount(hits.getTotalHits().value);
+			if (hits.getTotalHits().value > 0) {
+				queryResultsDTO.setMaxScore(hits.getMaxScore());
+				List<ResultPair> results = new ArrayList<>();
+				for (SearchHit hit : hits) {
+					ResultPair resultPair = new ResultPair(hit.getId(), hit.getScore());
+					results.add(resultPair);
+				}
+				queryResultsDTO.setResults(results);
+			}
+		} catch (Exception e) {
+			logger.error("[ERROR] Algo ha salido mal en la busqueda: ", e);
+		}
+		return queryResultsDTO;
 	}
 
 	public List<String> getCwes() throws IOException {
-        SearchRequest searchRequest = new SearchRequest("cve_index");
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.aggregation(AggregationBuilders.terms("cwes").field("cwes"));
-        searchRequest.source(searchSourceBuilder);
+		SearchRequest searchRequest = new SearchRequest("cve_index");
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.aggregation(AggregationBuilders.terms("cwes").field("cwes"));
+		searchRequest.source(searchSourceBuilder);
 
-        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-        Terms terms = searchResponse.getAggregations().get("cwes");
+		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		Terms terms = searchResponse.getAggregations().get("cwes");
 
-        List<String> cwes = new ArrayList<>();
-        for (Terms.Bucket bucket : terms.getBuckets()) {
-            cwes.add(bucket.getKeyAsString());
-        }
-        return cwes;
-    }
+		List<String> cwes = new ArrayList<>();
+		for (Terms.Bucket bucket : terms.getBuckets()) {
+			cwes.add(bucket.getKeyAsString());
+		}
+		return cwes;
+	}
+
+	public List<String> getAssigners() throws IOException {
+		SearchRequest searchRequest = new SearchRequest("cve_index");
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.aggregation(AggregationBuilders.terms("assigner").field("assigner"));
+		searchRequest.source(searchSourceBuilder);
+
+		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		Terms terms = searchResponse.getAggregations().get("assigner");
+
+		List<String> assigners = new ArrayList<>();
+
+		if (terms != null) {
+			for (Terms.Bucket bucket : terms.getBuckets()) {
+				assigners.add(bucket.getKeyAsString());
+			}
+		}
+
+		return assigners;
+	}
+
+	public List<String> getAttackVectors() throws IOException {
+		SearchRequest searchRequest = new SearchRequest("cve_index");
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder
+				.aggregation(AggregationBuilders.terms("attackVectors").field("impact.attackVector.keyword"));
+		searchRequest.source(searchSourceBuilder);
+
+		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		Terms terms = searchResponse.getAggregations().get("attackVectors");
+
+		List<String> attackVectors = new ArrayList<>();
+
+		if (terms != null) {
+			for (Terms.Bucket bucket : terms.getBuckets()) {
+				attackVectors.add(bucket.getKeyAsString());
+			}
+		}
+
+		return attackVectors;
+	}
+
+	public List<String> getVendors() throws IOException {
+		  SearchRequest searchRequest = new SearchRequest("cve_index");
+		  SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		  searchSourceBuilder.aggregation(AggregationBuilders.terms("vendors").field("vendorProductPairs"));
+		  searchRequest.source(searchSourceBuilder);
+
+		  SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		  Terms terms = searchResponse.getAggregations().get("vendors");
+
+		  List<String> vendors = new ArrayList<>();
+		  for (Terms.Bucket bucket : terms.getBuckets()) {
+		    String vendorProductPair = bucket.getKeyAsString();
+		    String vendor = vendorProductPair.split("/")[0];
+		    vendors.add(vendor);
+		  }
+		  return vendors;
+		}
 
 
 }

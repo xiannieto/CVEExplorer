@@ -4,12 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 public class QueryDTO implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String description; // Cadena/s a buscar en el campo descripcion
-	private String assigner; // Cadena/s a buscar en el campo assigner
+	private List<String> assigner; // Cadena/s a buscar en el campo assigner
 	private List<String> cwes; // Lista de IDs de CWEs a buscar (tanto en el campo cwes como en el
 								// cwesWithAncestor)
 	private List<String> vendors; // Lista de vendors a buscar en el campo vendorProductPairs con la clave
@@ -22,7 +19,7 @@ public class QueryDTO implements Serializable {
 		super();
 	}
 
-	public QueryDTO(String description, String assigner, List<String> cwes, List<String> vendors,
+	public QueryDTO(String description, List<String> assigner, List<String> cwes, List<String> vendors,
 			List<String> vendorProductPairs, List<String> attackVectors) {
 		super();
 		this.description = description;
@@ -41,11 +38,11 @@ public class QueryDTO implements Serializable {
 		this.description = description;
 	}
 
-	public String getAssigner() {
+	public List<String> getAssigner() {
 		return assigner;
 	}
 
-	public void setAssigner(String assigner) {
+	public void setAssigner(List<String> assigner) {
 		this.assigner = assigner;
 	}
 
@@ -81,10 +78,8 @@ public class QueryDTO implements Serializable {
 		this.attackVectors = attackVectors;
 	}
 
-	@Override
-	public String toString() {
-		return "QueryDTO [description=" + description + ", assigner=" + assigner + ", cwes=" + cwes + ", vendors="
-				+ vendors + ", vendorProductPairs=" + vendorProductPairs + ", attackVectors=" + attackVectors + "]";
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

@@ -31,24 +31,6 @@ public class CWEController {
 	@Autowired
 	private CWEService cweService;
 
-	@GetMapping("/")
-	@ResponseBody
-	public ResponseEntity<List<CWE>> getAllCwe() {
-		List<CWE> cweList = null;
-		try {
-			cweList = cweService.getAllCWE();
-			logger.info("[INFO] Lista de CWE cargada con éxito!");
-		} catch (Exception e) {
-			logger.error("[ERROR] No se ha podido obtener la lista de los CWEs: ", e);
-		}
-
-		if (cweList == null || cweList.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-
-		return ResponseEntity.ok(cweList);
-	}
-
 	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<CWE> getCweById(@PathVariable("id") String id) {
@@ -120,5 +102,23 @@ public class CWEController {
 
 	    return ResponseEntity.ok(children);
 	}
+	
+//	@GetMapping("/?pattern=^Buffer")
+//	@ResponseBody
+//	public ResponseEntity<List<CWE>> getPattern(@RequestParam String pattern) {
+//	    CWE children = null;
+//	    try {
+//	        children = cweService.findByName(pattern);
+//	        logger.info("[INFO] Lista de hijos para el ID -- [ {} ] -- : {}",children);
+//	    } catch (Exception e) {
+//	        logger.error("[ERROR] No se ha podido obtener la lista de hijos para el ID: [ {} ]", id, e);
+//	    }
+//
+//	    if (children == null || children.isEmpty()) {
+//	        return ResponseEntity.notFound().build();
+//	    }
+//
+//	    return ResponseEntity.ok(children);
+//	}
 
 }

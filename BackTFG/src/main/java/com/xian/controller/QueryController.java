@@ -47,12 +47,52 @@ public class QueryController {
 		List<String> results = null;
 		try {
 			results = queryService.getCwes();
-			logger.info("[INFO] Cwes del CVE cargados! cwes: {}", results);
+			logger.info("[INFO] Cwes de los CVE cargados! cwes: {}", results);
 		} catch (Exception e) {
 			logger.error("[ERROR] Error al realizar la carga de cwes.", e);
 			return ResponseEntity.notFound().build();
 		}
 		return  ResponseEntity.ok(results);
 	}
+	
+	@GetMapping("/getQueryAssigners")
+	  public ResponseEntity<List<String>> loadAssignersQuery() {
+	    List<String> results = null;
+	    try {
+	      results = queryService.getAssigners();
+	      logger.info("[INFO] Assigners de los CVE cargados! Assigners: {}", results);
+	    } catch (Exception e) {
+	      logger.error("[ERROR] Error al realizar la carga de Assigners.", e);
+	      return ResponseEntity.notFound().build();
+	    }
+	    return ResponseEntity.ok(results);
+	  }
+
+	  @GetMapping("/getQueryAttackVectors")
+	  public ResponseEntity<List<String>> loadAttackVectorsQuery() {
+	    List<String> results = null;
+	    try {
+	      results = queryService.getAttackVectors();
+	      logger.info("[INFO] Attack Vectors de los CVE cargados! Attack Vectors: {}", results);
+	    } catch (Exception e) {
+	      logger.error("[ERROR] Error al realizar la carga de Attack Vectors.", e);
+	      return ResponseEntity.notFound().build();
+	    }
+	    return ResponseEntity.ok(results);
+	  }
+	  
+	  @GetMapping("/getQueryVendors")
+	  public ResponseEntity<List<String>> loadVendorsQuery() {
+	    List<String> results = null;
+	    try {
+	      results = queryService.getVendors();
+	      logger.info("[INFO] Vendors de los CVE cargados! Vendors: {}", results);
+	    } catch (Exception e) {
+	      logger.error("[ERROR] Error al realizar la carga de Vendors.", e);
+	      return ResponseEntity.notFound().build();
+	    }
+	    return ResponseEntity.ok(results);
+	  }
+
 
 }
