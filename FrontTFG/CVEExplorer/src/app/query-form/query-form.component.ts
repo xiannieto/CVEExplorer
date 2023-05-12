@@ -15,11 +15,15 @@ export class QueryFormComponent implements OnInit {
   attackVectors: string[] = [];
   queryDTO: QueryDTO = new QueryDTO();
   queryResultsDTO!: QueryResultsDTO | undefined;
-  descriptions: any[] = [];
-  filteredDescriptions: any[] = [];
   vendors: any[] = [];
+  selectedVendors: string[] = [];
   filteredVendors: any[] = [];
-  selectedVendor: string | null = null;
+  selectedAssigners: string[] = [];
+  filteredAssigners: any[] = [];
+  selectedCwes: string[] = [];
+  filteredCwes: any[] = [];
+  selectedAttackVectors: string[] = [];
+  filteredAttackVectors: any[] = [];
 
   constructor(private queryService: QueryService) {
     this.queryDTO.cwes = [];
@@ -37,24 +41,22 @@ export class QueryFormComponent implements OnInit {
     this.queryService.getQueryAttackVectors().subscribe((data) => {
       this.attackVectors = data;
     });
-    this.queryService.getDescriptions().subscribe((data) => {
-      this.descriptions = data;
-    });
     this.queryService.getVendors().subscribe((data) => {
       this.vendors = data;
-      console.log(this.vendors);
     });
   }
 
-  onSelectVendor(event: any) {
-    this.queryDTO.vendors.push(event);
-    this.selectedVendor = null;
+  filterAssigners(event: any) {
+    let query = event.query;
+    this.filteredAssigners = this.assigners.filter((assigner) => {
+      return assigner.toLowerCase().indexOf(query.toLowerCase()) == 0;
+    });
   }
 
-  filterDescription(event: any) {
+  filterCwes(event: any) {
     let query = event.query;
-    this.filteredDescriptions = this.descriptions.filter((description) => {
-      return description.toLowerCase().indexOf(query.toLowerCase()) == 0;
+    this.filteredCwes = this.cwes.filter((cwe) => {
+      return cwe.toLowerCase().indexOf(query.toLowerCase()) == 0;
     });
   }
 
@@ -63,36 +65,57 @@ export class QueryFormComponent implements OnInit {
     this.filteredVendors = this.vendors.filter((vendor) => {
       return vendor.toLowerCase().indexOf(query.toLowerCase()) == 0;
     });
-    console.log(this.filteredVendors);
+  }
+
+  filterAttackVectors(event: any) {
+    let query = event.query;
+    this.filteredAttackVectors = this.attackVectors.filter((attackVector) => {
+      return attackVector.toLowerCase().indexOf(query.toLowerCase()) == 0;
+    });
+  }
+
+  onKeyUp(event: KeyboardEvent) {
+    if (event.key == 'Enter') {
+      let tokenInput = event.srcElement as any;
+      if (tokenInput.value) {
+        this.selectedVendors.push(tokenInput.value);
+        tokenInput.value = '';
+      }
+    }
   }
 
   onSubmit() {
     const queryData: QueryDTO = {
-      description: '',
       assigner: [],
       cwes: [],
       vendors: [],
       vendorProductPairs: [],
       attackVectors: [],
     };
-    if (this.queryDTO.cwes.length > 0) {
-      queryData.cwes = this.queryDTO.cwes;
+    if (this.selectedAssigners.length > 0) {
+      queryData.assigner = this.selectedAssigners;
     }
-    if (this.queryDTO.assigner.length > 0) {
-      queryData.assigner = this.queryDTO.assigner;
+    if (this.selectedCwes.length > 0) {
+      queryData.cwes = this.selectedCwes;
     }
-    if (this.queryDTO.attackVectors.length > 0) {
-      queryData.attackVectors = this.queryDTO.attackVectors;
+    if (this.selectedAttackVectors.length > 0) {
+      queryData.attackVectors = this.selectedAttackVectors;
+    }
+    if (this.selectedVendors.length > 0) {
+      queryData.vendors = this.selectedVendors;
     }
 
     this.queryService.search(queryData).subscribe((data: QueryResultsDTO) => {
       this.queryResultsDTO = data;
-      console.log(this.queryResultsDTO);
     });
   }
 
   onReset() {
     this.queryDTO = new QueryDTO();
     this.queryResultsDTO = undefined as QueryResultsDTO | undefined;
+    this.selectedAssigners = [];
+    this.selectedCwes = [];
+    this.selectedAttackVectors = [];
+    this.selectedVendors = [];
   }
 }

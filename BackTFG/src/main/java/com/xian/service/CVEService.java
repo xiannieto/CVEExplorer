@@ -49,13 +49,6 @@ public class CVEService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-
-//	@PostConstruct
-//	public void initialize() {
-//		logger.info("[INFO] Cargando CVES desde: " + resourceFile2022);
-//		loadFromJSON(resourceFile2022);
-//	}
-
 	public void loadFromJSON(String resourceFile) {
 		try {
 	        File file = new File(resourceFile);

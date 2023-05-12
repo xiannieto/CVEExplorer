@@ -1,86 +1,50 @@
 <app-home></app-home>
 <form (ngSubmit)="onSubmit()">
   <div class="form-group">
-    <label for="description">Descripción</label>
+    <label for="assigner">Asignado por</label>
     <p-autoComplete
-      [(ngModel)]="queryDTO.description"
-      [suggestions]="filteredDescriptions"
-      (completeMethod)="filterDescription($event)"
-      field="description"
-      name="description"
+      [(ngModel)]="selectedAssigners"
+      [suggestions]="filteredAssigners"
+      (completeMethod)="filterAssigners($event)"
+      name="assigner"
+      [multiple]="true"
     ></p-autoComplete>
   </div>
 
-  <div class="form-group">
-    <label for="assigner">Asignado por</label>
-    <select
-      class="form-control"
-      id="assigner"
-      [(ngModel)]="queryDTO.assigner"
-      name="assigner"
-      multiple
-    >
-      <option *ngFor="let assigner of assigners" [value]="assigner">
-        {{ assigner }}
-      </option>
-    </select>
-  </div>
   <div class="form-group">
     <label for="cwes">CWEs</label>
-    <select
-      class="form-control"
-      id="cwes"
-      [(ngModel)]="queryDTO.cwes"
+    <p-autoComplete
+      [(ngModel)]="selectedCwes"
+      [suggestions]="filteredCwes"
+      (completeMethod)="filterCwes($event)"
       name="cwes"
-      multiple
-    >
-      <option *ngFor="let cwe of cwes" [value]="cwe">{{ cwe }}</option>
-    </select>
+      [multiple]="true"
+    ></p-autoComplete>
   </div>
+
   <div class="form-group">
     <label for="vendors">Vendors</label>
     <p-autoComplete
-      [(ngModel)]="selectedVendor"
+      [(ngModel)]="selectedVendors"
       [suggestions]="filteredVendors"
       (completeMethod)="filterVendors($event)"
-      (onSelect)="onSelectVendor($event)"
-      field="vendor"
+      (onKeyUp)="onKeyUp($event)"
       name="vendors"
+      [multiple]="true"
     ></p-autoComplete>
-    <!--    <p-chips
-      [(ngModel)]="queryDTO.vendors"
-      name="vendors"
-      separator=","
-      placeholder="Hint: a, b, c"
-    ></p-chips>
--->
   </div>
 
-  <!--
-  <div class="form-group">
-    <label for="vendors">Vendors</label>
-    <p-chips
-      [(ngModel)]="queryDTO.vendors"
-      name="vendors"
-      separator=","
-      placeholder="Hint: a, b, c"
-    ></p-chips>
-  </div>
--->
   <div class="form-group">
     <label for="attackVectors">Vectores de Ataque</label>
-    <select
-      class="form-control"
-      id="attackVectors"
-      [(ngModel)]="queryDTO.attackVectors"
+    <p-autoComplete
+      [(ngModel)]="selectedAttackVectors"
+      [suggestions]="filteredAttackVectors"
+      (completeMethod)="filterAttackVectors($event)"
       name="attackVectors"
-      multiple
-    >
-      <option *ngFor="let attackVector of attackVectors" [value]="attackVector">
-        {{ attackVector }}
-      </option>
-    </select>
+      [multiple]="true"
+    ></p-autoComplete>
   </div>
+
   <button type="submit" class="btn btn-primary">Search</button>
   <button type="button" class="btn btn-secondary" (click)="onReset()">
     Reset

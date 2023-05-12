@@ -2,7 +2,9 @@ package com.xian.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.elasticsearch.action.search.SearchRequest;
@@ -42,9 +44,7 @@ public class QueryService {
 		QueryResultsDTO queryResultsDTO = new QueryResultsDTO();
 		try {
 			BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-			if (queryDTO.getDescription() != null && !queryDTO.getDescription().isEmpty()) {
-				queryBuilder.must(QueryBuilders.matchQuery("description", queryDTO.getDescription()));
-			}
+
 			if (queryDTO.getAssigner() != null && !queryDTO.getAssigner().isEmpty()) {
 				queryBuilder.must(QueryBuilders.termsQuery("assigner", queryDTO.getAssigner()));
 			}
@@ -151,22 +151,21 @@ public class QueryService {
 	}
 
 	public List<String> getVendors() throws IOException {
-		  SearchRequest searchRequest = new SearchRequest("cve_index");
-		  SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		  searchSourceBuilder.aggregation(AggregationBuilders.terms("vendors").field("vendorProductPairs"));
-		  searchRequest.source(searchSourceBuilder);
+		SearchRequest searchRequest = new SearchRequest("cve_index");
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.aggregation(AggregationBuilders.terms("vendors").field("vendorProductPairs"));
+		searchRequest.source(searchSourceBuilder);
 
-		  SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-		  Terms terms = searchResponse.getAggregations().get("vendors");
+		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		Terms terms = searchResponse.getAggregations().get("vendors");
 
-		  List<String> vendors = new ArrayList<>();
-		  for (Terms.Bucket bucket : terms.getBuckets()) {
-		    String vendorProductPair = bucket.getKeyAsString();
-		    String vendor = vendorProductPair.split("/")[0];
-		    vendors.add(vendor);
-		  }
-		  return vendors;
+		Set<String> vendors = new HashSet<>();
+		for (Terms.Bucket bucket : terms.getBuckets()) {
+			String vendorProductPair = bucket.getKeyAsString();
+			String vendor = vendorProductPair.split("/")[0];
+			vendors.add(vendor);
 		}
-
+		return new ArrayList<>(vendors);
+	}
 
 }

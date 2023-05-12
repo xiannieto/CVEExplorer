@@ -5,7 +5,6 @@ import java.util.List;
 
 public class QueryDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String description; // Cadena/s a buscar en el campo descripcion
 	private List<String> assigner; // Cadena/s a buscar en el campo assigner
 	private List<String> cwes; // Lista de IDs de CWEs a buscar (tanto en el campo cwes como en el
 								// cwesWithAncestor)
@@ -19,25 +18,15 @@ public class QueryDTO implements Serializable {
 		super();
 	}
 
-	public QueryDTO(String description, List<String> assigner, List<String> cwes, List<String> vendors,
+	public QueryDTO(List<String> assigner, List<String> cwes, List<String> vendors,
 			List<String> vendorProductPairs, List<String> attackVectors) {
 		super();
-		this.description = description;
 		this.assigner = assigner;
 		this.cwes = cwes;
 		this.vendors = vendors;
 		this.vendorProductPairs = vendorProductPairs;
 		this.attackVectors = attackVectors;
 	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public List<String> getAssigner() {
 		return assigner;
 	}
