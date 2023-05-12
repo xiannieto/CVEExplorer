@@ -1,9 +1,6 @@
 # TFG
 Interfaz de consulta y visualización de vulnerabilidades de BD
 
-
-java -jar xian-0.0.1-SNAPSHOT.jar --add-cve=../cve-resources/nvdcve-1.1-2022.json
-
 ------- VERSIONES -------
 
 SpringBoot: 3.0.2
@@ -27,3 +24,11 @@ Credenciales: user/user
 ---------- SERVIDOR FRONT END ----------
 
 Arrancar FRONT Angular (desde CVEExplorar/src/app): npm start
+
+
+---------- COMO INICIAR EL PROYECTO ----------
+Arrancar servidor Elastic
+usar este comando:
+      java -jar xian-0.0.1-SNAPSHOT.jar --add-cve=../cve-resources/nvdcve-1.1-2022.json
+      sustituir ruta por el archivo a indexar
+Arrancar Back y Front (da igual el orden)
