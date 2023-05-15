@@ -9,7 +9,7 @@ form {
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
+  margin: 1rem;
 }
 
 .form-group label {

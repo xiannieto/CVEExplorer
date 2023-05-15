@@ -65,14 +65,5 @@ public class CVEController {
 		return ResponseEntity.ok(cve);
 	}
 
-//	@PostMapping("/index-cve")
-//	public ResponseEntity<String> indexCVE(@RequestParam("filePath") String filePath) throws IOException {
-//		try {
-//			cveService.loadFromJSON(filePath);
-//			return new ResponseEntity<>("El archivo ha sido indexado correctamente", HttpStatus.OK);
-//		} catch (Exception e) {
-//			return new ResponseEntity<>("El archivo no se ha podido indexar", HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//	}
 
 }

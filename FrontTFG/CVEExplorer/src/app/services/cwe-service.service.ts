@@ -17,37 +17,40 @@ export class CweService {
   constructor(private http: HttpClient) {}
 
   getCWEById(id: string): Observable<CWE> {
-    return this.http.get<CWE>(`${this.cweUrl}/${id}`)
-      .pipe(
-        tap(data => console.log(data)),
-        catchError(this.handleError)
-      );
+    return this.http.get<CWE>(`${this.cweUrl}/${id}`).pipe(
+      tap((data) => console.log(data)),
+      catchError(this.handleError)
+    );
   }
 
   getAncestors(id: string): Observable<CWE[]> {
-    return this.http.get<CWE[]>(`${this.cweUrl}/${id}/ancestors`)
-    .pipe(
-      catchError(error => {
+    return this.http.get<CWE[]>(`${this.cweUrl}/${id}/ancestors`).pipe(
+      catchError((error) => {
+        // No mostrar un mensaje de error cuando el servidor devuelva un código de estado HTTP 404
         console.error('Error al obtener los padres del CWE:', error);
         return of([]);
       })
     );
   }
 
-  findRoots(pageNumber: number = 0, pageSize: number = 10): Observable<CweListResponse> {
-    return this.http
-    .get<CweListResponse>(`${this.cweUrl}/roots/?pageNumber=${pageNumber}&pageSize=${pageSize}`)
-    .pipe(catchError(this.handleError));
-  }
-
   getChildren(id: string): Observable<CWE[]> {
-    return this.http.get<CWE[]>(`${this.cweUrl}/${id}/getChildren`)
-    .pipe(
-      catchError(error => {
+    return this.http.get<CWE[]>(`${this.cweUrl}/${id}/getChildren`).pipe(
+      catchError((error) => {
         console.error('Error al obtener los hijos del CWE:', error);
         return of([]);
       })
     );
+  }
+
+  findRoots(
+    pageNumber: number = 0,
+    pageSize: number = 10
+  ): Observable<CweListResponse> {
+    return this.http
+      .get<CweListResponse>(
+        `${this.cweUrl}/roots/?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      )
+      .pipe(catchError(this.handleError));
   }
 
   handleError(error: HttpErrorResponse) {

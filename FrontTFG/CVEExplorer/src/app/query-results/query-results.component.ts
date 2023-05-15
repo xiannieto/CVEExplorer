@@ -32,7 +32,7 @@ export class QueryResultsComponent implements OnInit, OnChanges {
   }
 
   updateCveDetails(): void {
-    if (this.queryResults) {
+    if (this.queryResults && this.queryResults.results) {
       this.cveDetails = this.queryResults.results.map((result) =>
         this.cveService.getCveById(result.cveID)
       );

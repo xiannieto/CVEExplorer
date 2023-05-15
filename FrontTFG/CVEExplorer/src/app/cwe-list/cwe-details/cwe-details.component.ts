@@ -6,32 +6,46 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-cwe-details',
   templateUrl: './cwe-details.component.html',
-  styleUrls: ['./cwe-details.component.css']
+  styleUrls: ['./cwe-details.component.css'],
 })
-
 export class CweDetailsComponent implements OnInit {
   cwe: CWE | null = null;
   ancestors: CWE[] = [];
   children: CWE[] = [];
 
-  constructor(
-    private route: ActivatedRoute,
-    private cweService: CweService
-  ) {}
+  constructor(private route: ActivatedRoute, private cweService: CweService) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const cweId = params.get('id');
       if (cweId) {
-        this.cweService.getCWEById(cweId).subscribe(cwe => {
+        this.cweService.getCWEById(cweId).subscribe((cwe) => {
           this.cwe = cwe;
         });
-        this.cweService.getAncestors(cweId).subscribe(ancestors => {
-          this.ancestors = ancestors;
-        });
-        this.cweService.getChildren(cweId).subscribe(children => {
-            this.children = children;
-        });
+        this.cweService.getAncestors(cweId).subscribe(
+          (ancestors) => {
+            // Asegurarse de que la propiedad ancestors siempre se inicialice con un valor válido
+            this.ancestors = ancestors || [];
+          },
+          (error) => {
+            // Manejar correctamente los códigos de estado HTTP 404
+            if (error.status === 404) {
+              this.ancestors = [];
+            }
+          }
+        );
+        this.cweService.getChildren(cweId).subscribe(
+          (children) => {
+            // Asegurarse de que la propiedad children siempre se inicialice con un valor válido
+            this.children = children || [];
+          },
+          (error) => {
+            // Manejar correctamente los códigos de estado HTTP 404
+            if (error.status === 404) {
+              this.children = [];
+            }
+          }
+        );
       }
     });
   }
@@ -39,7 +53,7 @@ export class CweDetailsComponent implements OnInit {
   get languagesArray() {
     if (this.cwe) {
       if (Array.isArray(this.cwe.languages)) {
-        return this.cwe.languages.filter(language => language !== '');
+        return this.cwe.languages.filter((language) => language !== '');
       }
     }
     return [];
@@ -48,7 +62,7 @@ export class CweDetailsComponent implements OnInit {
   get technologiesArray() {
     if (this.cwe) {
       if (Array.isArray(this.cwe.technologies)) {
-        return this.cwe.technologies.filter(technology => technology !== '');
+        return this.cwe.technologies.filter((technology) => technology !== '');
       }
     }
     return [];
@@ -57,7 +71,7 @@ export class CweDetailsComponent implements OnInit {
   get operatingSystemsArray() {
     if (this.cwe) {
       if (Array.isArray(this.cwe.operatingSystems)) {
-        return this.cwe.operatingSystems.filter(os => os !== '');
+        return this.cwe.operatingSystems.filter((os) => os !== '');
       }
     }
     return [];
@@ -66,7 +80,9 @@ export class CweDetailsComponent implements OnInit {
   get architecturesArray() {
     if (this.cwe) {
       if (Array.isArray(this.cwe.architectures)) {
-        return this.cwe.architectures.filter(architecture => architecture !== '');
+        return this.cwe.architectures.filter(
+          (architecture) => architecture !== ''
+        );
       }
     }
     return [];

@@ -1,4 +1,5 @@
 export class QueryDTO {
+  description!: string;
   assigner!: string[];
   cwes!: string[];
   vendors!: string[];
@@ -6,6 +7,7 @@ export class QueryDTO {
   attackVectors!: string[];
 
   constructor() {
+    this.description = '';
     this.assigner = [];
     this.cwes = [];
     this.vendors = [];

@@ -253,24 +253,6 @@ public class CVEService {
 	    }
 	    return cves;
 	}
-	
-//	public List<CVE> getAllCVEs(int pageNumber, int pageSize) {
-//	    SearchRequest searchRequest = SearchRequest.builder()
-//	            .index("cve_index")
-//	            .query(q -> q.matchAll(m -> m))
-//	            .from(pageNumber * pageSize)
-//	            .size(pageSize)
-//	            .build();
-//	    SearchResponse searchResponse = client.search(searchRequest);
-//	    List<CVE> cves = new ArrayList<>();
-//	    for (SearchHit hit : searchResponse.hits().hits()) {
-//	        CVE cve = JacksonJsonpMapper.builder()
-//	                .build()
-//	                .readValue(hit.source().toString(), CVE.class);
-//	        cves.add(cve);
-//	    }
-//	    return cves;
-//	}
 
 	public long countAllCVEs() {
 	    CountRequest countRequest = new CountRequest("cve_index");

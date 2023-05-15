@@ -43,8 +43,12 @@ public class QueryService {
 
 		QueryResultsDTO queryResultsDTO = new QueryResultsDTO();
 		try {
+			logger.info("[DEBUG] " + queryDTO.getDescription());
 			BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-
+			
+			if (queryDTO.getDescription() != null && !queryDTO.getDescription().isEmpty()) {
+			    queryBuilder.must(QueryBuilders.matchQuery("description", queryDTO.getDescription()));
+			}
 			if (queryDTO.getAssigner() != null && !queryDTO.getAssigner().isEmpty()) {
 				queryBuilder.must(QueryBuilders.termsQuery("assigner", queryDTO.getAssigner()));
 			}
@@ -65,6 +69,8 @@ public class QueryService {
 				queryBuilder.must(QueryBuilders.termsQuery("impact.attackVector.keyword", queryDTO.getAttackVectors()));
 			}
 
+			logger.info("[DEBUG] " + queryBuilder.toString());
+			
 			SearchRequest searchRequest = new SearchRequest("cve_index");
 			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 			searchSourceBuilder.query(queryBuilder);
@@ -76,6 +82,7 @@ public class QueryService {
 				logger.error("[ERROR] No se ha podido hacer la búsqueda: ", e);
 				e.printStackTrace();
 			}
+			logger.info("[DEBUG] " + searchResponse.toString());
 			SearchHits hits = searchResponse.getHits();
 			queryResultsDTO.setResultCount(hits.getTotalHits().value);
 			if (hits.getTotalHits().value > 0) {
@@ -167,5 +174,7 @@ public class QueryService {
 		}
 		return new ArrayList<>(vendors);
 	}
+	
+	
 
 }

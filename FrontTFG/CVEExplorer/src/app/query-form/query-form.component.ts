@@ -29,6 +29,7 @@ export class QueryFormComponent implements OnInit {
     this.queryDTO.cwes = [];
     this.queryDTO.assigner = [];
     this.queryDTO.attackVectors = [];
+    this.queryDTO.description = '';
   }
 
   ngOnInit() {
@@ -86,24 +87,31 @@ export class QueryFormComponent implements OnInit {
 
   onSubmit() {
     const queryData: QueryDTO = {
+      description: '',
       assigner: [],
       cwes: [],
       vendors: [],
       vendorProductPairs: [],
       attackVectors: [],
     };
+
     if (this.selectedAssigners.length > 0) {
       queryData.assigner = this.selectedAssigners;
     }
+
     if (this.selectedCwes.length > 0) {
       queryData.cwes = this.selectedCwes;
     }
+
     if (this.selectedAttackVectors.length > 0) {
       queryData.attackVectors = this.selectedAttackVectors;
     }
+
     if (this.selectedVendors.length > 0) {
       queryData.vendors = this.selectedVendors;
     }
+
+    queryData.description = this.queryDTO.description;
 
     this.queryService.search(queryData).subscribe((data: QueryResultsDTO) => {
       this.queryResultsDTO = data;
@@ -111,11 +119,22 @@ export class QueryFormComponent implements OnInit {
   }
 
   onReset() {
-    this.queryDTO = new QueryDTO();
+    this.queryDTO.description = '';
+
+    this.queryDTO.assigner = [];
+
+    this.queryDTO.cwes = [];
+
+    this.queryDTO.attackVectors = [];
+
     this.queryResultsDTO = undefined as QueryResultsDTO | undefined;
+
     this.selectedAssigners = [];
+
     this.selectedCwes = [];
+
     this.selectedAttackVectors = [];
+
     this.selectedVendors = [];
   }
 }

@@ -45,6 +45,17 @@
     ></p-autoComplete>
   </div>
 
+  <div class="form-group">
+    <label for="description">Descripción</label>
+    <input
+      type="text"
+      class="form-control"
+      id="description"
+      name="description"
+      [(ngModel)]="queryDTO.description"
+    />
+  </div>
+
   <button type="submit" class="btn btn-primary">Search</button>
   <button type="button" class="btn btn-secondary" (click)="onReset()">
     Reset

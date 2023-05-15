@@ -102,23 +102,4 @@ public class CWEController {
 
 	    return ResponseEntity.ok(children);
 	}
-	
-//	@GetMapping("/?pattern=^Buffer")
-//	@ResponseBody
-//	public ResponseEntity<List<CWE>> getPattern(@RequestParam String pattern) {
-//	    CWE children = null;
-//	    try {
-//	        children = cweService.findByName(pattern);
-//	        logger.info("[INFO] Lista de hijos para el ID -- [ {} ] -- : {}",children);
-//	    } catch (Exception e) {
-//	        logger.error("[ERROR] No se ha podido obtener la lista de hijos para el ID: [ {} ]", id, e);
-//	    }
-//
-//	    if (children == null || children.isEmpty()) {
-//	        return ResponseEntity.notFound().build();
-//	    }
-//
-//	    return ResponseEntity.ok(children);
-//	}
-
 }
